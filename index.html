@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu PCCC - QCVN 06:2022 (SĐ 1:2023)</title>
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-hover: #b91c1c;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+            --highlight: #fef3c7;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+        #result, #group-result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success {
+            background-color: #d1fae5;
+            border: 1px solid #34d399;
+            color: #065f46;
+        }
+        .warning {
+            background-color: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+        }
+        .info-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+        .tab:hover {
+            color: var(--text);
+            background-color: #f9fafb;
+        }
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: -2px;
+            background-color: transparent;
+        }
+        .hidden {
+            display: none;
+        }
+        
+        /* Table Styles for Group Lookup */
+        .group-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .group-table th, .group-table td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+        }
+        .group-table th {
+            background-color: #f9fafb;
+            color: #374151;
+        }
+        .group-item:hover {
+            background-color: #fef2f2;
+        }
+        .highlight-text {
+            background-color: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Công Cụ Tra Cứu PCCC</h1>
+    <div class="subtitle">Theo QCVN 06:2022/BXD Sửa đổi 1:2023</div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('group_search')">🔍 Tra cứu Nhóm nhà (F)</div>
+        <div class="tab" onclick="switchTab('residential')">🏠 Nhà ở (F1.3)</div>
+        <div class="tab" onclick="switchTab('public')">🏢 Công cộng</div>
+        <div class="tab" onclick="switchTab('production')">🏭 Sản xuất (F5.1)</div>
+        <div class="tab" onclick="switchTab('storage')">📦 Kho (F5.2)</div>
+    </div>
+
+    <!-- 1. TRA CỨU NHÓM NHÀ (NEW) -->
+    <div id="tab-group-search">
+        <div class="info-box">
+            <strong>Hướng dẫn:</strong> Nhập công năng hoặc tên loại hình công trình (ví dụ: "karaoke", "bệnh viện", "chung cư", "trường học") để tìm Nhóm nguy hiểm cháy theo công năng (Bảng 6).
+        </div>
+        <div class="form-group">
+            <label>Nhập từ khóa tìm kiếm:</label>
+            <input type="text" id="keyword" placeholder="Nhập tên công trình..." onkeyup="searchGroup()">
+        </div>
+        <div id="group-result" style="display: block;">
+            <table class="group-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Nhóm F</th>
+                        <th style="width: 30%">Mục đích sử dụng</th>
+                        <th>Đặc điểm sử dụng</th>
+                    </tr>
+                </thead>
+                <tbody id="group-table-body">
+                    <!-- Results will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. TRA CỨU BẬC CHỊU LỬA (EXISTING) -->
+    <div id="tab-fire-grade" class="hidden">
+        <div id="form-content">
+            <!-- Các trường chung -->
+            <div class="form-group">
+                <label>Chiều cao PCCC của nhà (m):</label>
+                <input type="number" id="height" placeholder="Ví dụ: 15" step="0.1">
+                <div class="note">Lưu ý: Nhập chiều cao PCCC (tính từ mặt đường xe chữa cháy đến mép dưới cửa sổ tầng trên cùng), không phải chiều cao đỉnh mái.</div>
+            </div>
+
+            <div class="form-group">
+                <label>Diện tích khoang cháy lớn nhất (m²):</label>
+                <input type="number" id="area" placeholder="Ví dụ: 2000">
+                <div class="note">Là diện tích sàn lớn nhất trong phạm vi một khoang cháy (giữa các tường ngăn cháy loại 1).</div>
+            </div>
+
+            <!-- Trường riêng cho Sản xuất/Kho -->
+            <div id="risk-group" class="form-group hidden">
+                <label>Hạng nguy hiểm cháy nổ (Cho nhà SX/Kho):</label>
+                <select id="riskCategory">
+                    <option value="A">Hạng A (Nguy hiểm cháy nổ cao)</option>
+                    <option value="B">Hạng B (Nguy hiểm cháy nổ)</option>
+                    <option value="C">Hạng C (Nguy hiểm cháy)</option>
+                    <option value="D">Hạng D (Nguy hiểm cháy vừa)</option>
+                    <option value="E">Hạng E (Nguy hiểm cháy thấp)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Số tầng (tầng trên mặt đất):</label>
+                <input type="number" id="floors" placeholder="Ví dụ: 5">
+            </div>
+
+            <button class="btn" onclick="calculateFireGrade()">Tra cứu Bậc Chịu Lửa</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+    
+    <div style="margin-top: 30px; font-size: 13px; color: #888;">
+        <p><strong>Cơ sở pháp lý:</strong></p>
+        <ul>
+            <li>Phân nhóm nhà: Bảng 6 - QCVN 06:2022/BXD SĐ 1:2023.</li>
+            <li>Bậc chịu lửa: Các bảng H.1, H.2, H.9, H.11 Phụ lục H.</li>
+            <li>Kết quả chỉ mang tính tham khảo nhanh. Vui lòng đối chiếu lại với quy chuẩn gốc cho hồ sơ thiết kế chính thức.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    let currentType = 'group_search'; // Default tab
+
+    // Dữ liệu Bảng 6 - QCVN 06:2022
+    const groupData = [
+        { id: 'F1.1', usage: 'Nhà trẻ, trường mẫu giáo, mầm non; bệnh viện, khối nhà điều trị nội trú, nhà hộ sinh; nhà dưỡng lão, nhà cho người khuyết tật; khối ngủ trường nội trú.', desc: 'Sử dụng cả ngày và đêm. Người sử dụng có thể không tự thoát nạn được (trẻ em, người bệnh, người già).' },
+        { id: 'F1.2', usage: 'Khách sạn, nhà khách, nhà nghỉ, nhà trọ, ký túc xá, nhà ở tập thể; khối ngủ của cơ sở điều dưỡng.', desc: 'Lưu trú ngắn hạn hoặc dài hạn. Người sử dụng quen thuộc hoặc không quen thuộc tòa nhà.' },
+        { id: 'F1.3', usage: 'Nhà chung cư.', desc: 'Sử dụng thường xuyên, người ở quen thuộc với tòa nhà.' },
+        { id: 'F1.4', usage: 'Nhà ở riêng lẻ.', desc: 'Quy mô nhỏ, ít người.' },
+        { id: 'F2.1', usage: 'Nhà hát, rạp chiếu phim, rạp xiếc, phòng hòa nhạc, câu lạc bộ, vũ trường, quán bar, phòng hát (karaoke), nhà thi đấu, thư viện, trung tâm hội nghị.', desc: 'Có ghế ngồi cố định hoặc tập trung đông người trong không gian kín.' },
+        { id: 'F2.2', usage: 'Bảo tàng, triển lãm, phòng nhảy, công trình vui chơi giải trí trong nhà.', desc: 'Không có ghế ngồi cố định cho khán giả.' },
+        { id: 'F2.3', usage: 'Các cơ sở như F2.1 nhưng ở ngoài trời (Sân vận động, sân tập luyện).', desc: 'Hoạt động ngoài trời.' },
+        { id: 'F3.1', usage: 'Cơ sở bán hàng, trung tâm thương mại, siêu thị, cửa hàng bách hóa, nhà sách, showroom.', desc: 'Số lượng khách lớn hơn nhân viên.' },
+        { id: 'F3.2', usage: 'Nhà hàng, cửa hàng ăn uống, giải khát, trạm dừng nghỉ.', desc: 'Phục vụ ăn uống.' },
+        { id: 'F3.3', usage: 'Nhà ga (đường sắt, hàng không, bến xe, bến phà, cáp treo).', desc: 'Tập trung đông người chờ đợi.' },
+        { id: 'F3.4', usage: 'Phòng khám đa khoa, chuyên khoa, cơ sở điều trị ngoại trú, thẩm mỹ viện, massage.', desc: 'Cơ sở y tế không có nội trú.' },
+        { id: 'F3.5', usage: 'Cơ sở dịch vụ đời sống: Bưu điện, ngân hàng (giao dịch), phòng công chứng, tiệm cắt tóc, giặt là, may mặc.', desc: 'Khách đến giao dịch.' },
+        { id: 'F3.6', usage: 'Khu liên hợp thể thao, phòng tập (gym, yoga) không có khán đài.', desc: 'Tập luyện thể thao.' },
+        { id: 'F4.1', usage: 'Trường tiểu học, trung học cơ sở, trung học phổ thông, trường dạy nghề (trừ mầm non thuộc F1.1).', desc: 'Giáo dục phổ thông.' },
+        { id: 'F4.2', usage: 'Trường đại học, cao đẳng, trung cấp chuyên nghiệp.', desc: 'Giáo dục đại học, người lớn.' },
+        { id: 'F4.3', usage: 'Trụ sở cơ quan, văn phòng làm việc, ngân hàng (khối văn phòng), trụ sở thiết kế, đài truyền hình.', desc: 'Làm việc hành chính, văn phòng.' },
+        { id: 'F4.4', usage: 'Trạm cứu hỏa.', desc: '' },
+        { id: 'F5.1', usage: 'Nhà sản xuất, xưởng sản xuất, phòng thí nghiệm, xưởng sửa chữa.', desc: 'Hoạt động sản xuất công nghiệp.' },
+        { id: 'F5.2', usage: 'Nhà kho, gara để xe (không sửa chữa), kho lưu trữ sách, kho lạnh.', desc: 'Lưu trữ hàng hóa, xe cộ.' },
+        { id: 'F5.3', usage: 'Nhà phục vụ nông nghiệp (chuồng trại, nhà kính...).', desc: '' }
+    ];
+
+    // Initialize Group Table
+    function initGroupTable() {
+        searchGroup();
+    }
+
+    function searchGroup() {
+        const keyword = document.getElementById('keyword').value.toLowerCase();
+        const tbody = document.getElementById('group-table-body');
+        tbody.innerHTML = '';
+
+        const filtered = groupData.filter(item => 
+            item.id.toLowerCase().includes(keyword) || 
+            item.usage.toLowerCase().includes(keyword) || 
+            item.desc.toLowerCase().includes(keyword)
+        );
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: #888;">Không tìm thấy kết quả phù hợp.</td></tr>';
+            return;
+        }
+
+        filtered.forEach(item => {
+            // Highlight keyword logic optional, keep simple for now
+            const row = document.createElement('tr');
+            row.className = 'group-item';
+            row.innerHTML = `
+                <td style="font-weight: bold; color: var(--primary);">${item.id}</td>
+                <td>${item.usage}</td>
+                <td>${item.desc}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function switchTab(type) {
+        currentType = type;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const groupSearchDiv = document.getElementById('tab-group-search');
+        const fireGradeDiv = document.getElementById('tab-fire-grade');
+        const riskGroup = document.getElementById('risk-group');
+
+        // Logic hiển thị Tab nội dung
+        if (type === 'group_search') {
+            groupSearchDiv.style.display = 'block';
+            fireGradeDiv.classList.add('hidden');
+        } else {
+            groupSearchDiv.style.display = 'none';
+            fireGradeDiv.classList.remove('hidden');
+            
+            // Logic hiển thị input Hạng cháy nổ
+            if (type === 'production' || type === 'storage') {
+                riskGroup.classList.remove('hidden');
+            } else {
+                riskGroup.classList.add('hidden');
+            }
+            
+            // Reset result bảng tra bậc
+            document.getElementById('result').style.display = 'none';
+        }
+    }
+
+    function calculateFireGrade() {
+        const h = parseFloat(document.getElementById('height').value);
+        const a = parseFloat(document.getElementById('area').value);
+        const f = parseInt(document.getElementById('floors').value);
+        const risk = document.getElementById('riskCategory').value;
+        const resultDiv = document.getElementById('result');
+
+        if (isNaN(h) || isNaN(a) || isNaN(f)) {
+            alert("Vui lòng nhập đầy đủ Chiều cao, Diện tích và Số tầng.");
+            return;
+        }
+
+        let grades = [];
+        let validGrade = null;
+
+        // Logic tính toán (giữ nguyên từ phiên bản trước)
+        // 1. NHÀ Ở (F1.3)
+        if (currentType === 'residential') {
+            grades = [
+                { id: 'V', label: 'Bậc V', maxH: 15, maxA: 1000, maxF: 3 },
+                { id: 'IV', label: 'Bậc IV', maxH: 15, maxA: 1400, maxF: 5 },
+                { id: 'III', label: 'Bậc III', maxH: 28, maxA: 1800, maxF: 9 },
+                { id: 'II', label: 'Bậc II', maxH: 50, maxA: 2500, maxF: 15 },
+                { id: 'I', label: 'Bậc I', maxH: 75, maxA: 2500, maxF: 25 }
+            ];
+            if (h > 75) validGrade = { id: 'I+', label: 'Bậc I (Yêu cầu đặc biệt A.3)', note: 'Nhà cao trên 75m phải tuân thủ các yêu cầu bổ sung tại Phụ lục A.3.' };
+        }
+        // 2. CÔNG CỘNG
+        else if (currentType === 'public') {
+            const checkPublic = (grade, maxH, maxF, areaLimits) => {
+                if (h > maxH || f > maxF) return false;
+                let limit = 0;
+                if (f === 1) limit = areaLimits[0];
+                else if (f === 2) limit = areaLimits[1];
+                else if (f === 3) limit = areaLimits[2];
+                else if (f <= 5) limit = areaLimits[3];
+                else if (f <= 9) limit = areaLimits[4];
+                else limit = areaLimits[5];
+                return a <= limit;
+            };
+            validGrade = null;
+            if(checkPublic('IV', 9, 2, [2000, 1400, 0, 0, 0, 0])) validGrade = {id:'IV', label:'Bậc IV'};
+            else if(checkPublic('III', 15, 5, [3000, 2000, 2000, 1200, 0, 0])) validGrade = {id:'III', label:'Bậc III'};
+            else if(checkPublic('II', 50, 16, [6000, 4000, 4000, 4000, 4000, 2200])) validGrade = {id:'II', label:'Bậc II'};
+            else if(checkPublic('I', 50, 16, [6000, 5000, 5000, 5000, 5000, 2500])) validGrade = {id:'I', label:'Bậc I'};
+            if (h > 50) validGrade = {id: 'I+', label: 'Bậc I (Đặc biệt)', note: 'Nhà công cộng cao >50m phải tuân thủ Phụ lục A.2'};
+        }
+        // 3. SẢN XUẤT (F5.1)
+        else if (currentType === 'production') {
+            const limits = getF51Limits(risk);
+            for (let g of limits) {
+                let maxA = (f === 1) ? g.a1 : (f === 2 ? g.a2 : g.a3);
+                if (f > 1 && g.a2 === 0) continue;
+                if (f >= 3 && g.a3 === 0) continue;
+                if (h <= g.h && a <= maxA) {
+                    validGrade = { id: g.id, label: g.label };
+                    break;
+                }
+            }
+        }
+        // 4. KHO (F5.2)
+        else if (currentType === 'storage') {
+            const limits = getF52Limits(risk);
+             for (let g of limits) {
+                let maxA = (f === 1) ? g.a1 : (f === 2 ? g.a2 : g.a3);
+                if (f > 1 && g.a2 === 0) continue;
+                if (f >= 3 && g.a3 === 0) continue;
+                if ((g.h === -1 || h <= g.h) && a <= maxA) {
+                    validGrade = { id: g.id, label: g.label };
+                    break;
+                }
+            }
+        }
+
+        if (currentType === 'residential' && !validGrade && h <= 75) {
+            for (let i = 0; i < grades.length; i++) {
+                if (h <= grades[i].maxH && a <= grades[i].maxA && f <= grades[i].maxF) {
+                    validGrade = grades[i];
+                    break;
+                }
+            }
+        }
+
+        resultDiv.style.display = 'block';
+        resultDiv.className = validGrade ? 'success' : 'warning';
+        
+        if (validGrade) {
+            resultDiv.innerHTML = `
+                <h3 style="margin-top:0">Kết quả tra cứu:</h3>
+                <p>Công trình của bạn cần đạt tối thiểu: <strong style="font-size: 20px">${validGrade.label}</strong></p>
+                <p>Cấp nguy hiểm cháy kết cấu yêu cầu: <strong>S0</strong></p>
+                ${validGrade.note ? `<p style="color: red"><em>${validGrade.note}</em></p>` : ''}
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <h3 style="margin-top:0">Không tìm thấy Bậc chịu lửa phù hợp!</h3>
+                <p>Các chỉ số vượt quá giới hạn thông thường (Bậc I, S0).</p>
+                <p><strong>Giải pháp gợi ý:</strong></p>
+                <ul>
+                    <li>Giảm diện tích khoang cháy.</li>
+                    <li>Lắp đặt hệ thống chữa cháy tự động (Nhà SX/Kho được tăng diện tích).</li>
+                    <li>Kiểm tra lại Hạng nguy hiểm cháy nổ (nếu là kho/xưởng).</li>
+                </ul>
+            `;
+        }
+    }
+
+    function getF51Limits(risk) {
+        switch (risk) {
+            case 'A': return [{id: 'IV', label: 'Bậc IV', h: 999, a1: 3500, a2: 0, a3: 0}, {id: 'III', label: 'Bậc III', h: 24, a1: 7800, a2: 3500, a3: 2600}, {id: 'I, II', label: 'Bậc I hoặc II', h: 36, a1: 99999, a2: 5200, a3: 3500}];
+            case 'B': return [{id: 'IV', label: 'Bậc IV', h: 999, a1: 3500, a2: 0, a3: 0}, {id: 'III', label: 'Bậc III', h: 24, a1: 7800, a2: 3500, a3: 2600}, {id: 'I, II', label: 'Bậc I hoặc II', h: 36, a1: 99999, a2: 10400, a3: 7800}];
+            case 'C': return [{id: 'IV', label: 'Bậc IV', h: 18, a1: 5200, a2: 2600, a3: 2000}, {id: 'III', label: 'Bậc III', h: 24, a1: 25000, a2: 10400, a3: 5200}, {id: 'I, II', label: 'Bậc I hoặc II', h: 48, a1: 99999, a2: 25000, a3: 10400}];
+            case 'D': return [{id: 'IV', label: 'Bậc IV', h: 24, a1: 99999, a2: 10400, a3: 5200}, {id: 'III', label: 'Bậc III', h: 36, a1: 99999, a2: 25000, a3: 10400}, {id: 'I, II', label: 'Bậc I hoặc II', h: 54, a1: 99999, a2: 99999, a3: 99999}];
+            case 'E': return [{id: 'IV', label: 'Bậc IV', h: 24, a1: 99999, a2: 25000, a3: 7800}, {id: 'III', label: 'Bậc III', h: 36, a1: 99999, a2: 50000, a3: 15000}, {id: 'I, II', label: 'Bậc I hoặc II', h: 54, a1: 99999, a2: 99999, a3: 99999}];
+        }
+        return [];
+    }
+
+    function getF52Limits(risk) {
+        switch (risk) {
+            case 'A': return [{id: 'IV', label: 'Bậc IV', h: 999, a1: 3600, a2: 0, a3: 0}, {id: 'III', label: 'Bậc III', h: 999, a1: 4400, a2: 0, a3: 0}, {id: 'I, II', label: 'Bậc I hoặc II', h: 999, a1: 5200, a2: 0, a3: 0}];
+            case 'B': return [{id: 'IV', label: 'Bậc IV', h: 999, a1: 5200, a2: 0, a3: 0}, {id: 'III', label: 'Bậc III', h: 999, a1: 6500, a2: 0, a3: 0}, {id: 'I, II', label: 'Bậc I hoặc II', h: 18, a1: 7800, a2: 5200, a3: 3500}];
+            case 'C': return [{id: 'V', label: 'Bậc V', h: 999, a1: 1200, a2: 0, a3: 0}, {id: 'IV', label: 'Bậc IV', h: 999, a1: 7800, a2: 1600, a3: 1600}, {id: 'III', label: 'Bậc III', h: 24, a1: 10400, a2: 5200, a3: 2600}, {id: 'I, II', label: 'Bậc I hoặc II', h: 36, a1: 10400, a2: 7800, a3: 5200}];
+            case 'D': return [{id: 'V', label: 'Bậc V', h: 9, a1: 2200, a2: 1200, a3: 0}, {id: 'IV', label: 'Bậc IV', h: 999, a1: 99999, a2: 2200, a3: 2200}, {id: 'III', label: 'Bậc III', h: 36, a1: 99999, a2: 7800, a3: 5200}, {id: 'I, II', label: 'Bậc I hoặc II', h: 999, a1: 99999, a2: 10400, a3: 7800}];
+            case 'E': return [{id: 'V', label: 'Bậc V', h: 9, a1: 2200, a2: 1200, a3: 0}, {id: 'IV', label: 'Bậc IV', h: 999, a1: 99999, a2: 2200, a3: 2200}, {id: 'III', label: 'Bậc III', h: 36, a1: 99999, a2: 7800, a3: 5200}, {id: 'I, II', label: 'Bậc I hoặc II', h: 999, a1: 99999, a2: 10400, a3: 7800}];
+        }
+        return [];
+    }
+
+    // Init data on load
+    initGroupTable();
+
+</script>
+
+</body>
+</html>
