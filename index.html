@@ -15,7 +15,6 @@
             --text: #1f1f1f;
             --border: #e5e7eb;
             --highlight: #fde047;
-            --highlight-text: #000;
         }
 
         body {
@@ -109,7 +108,6 @@
             width: 100%; padding: 10px;
             border: 1px solid #dadce0; border-radius: 4px;
             font-size: 14px; transition: 0.2s;
-            box-sizing: border-box;
         }
         input:focus, select:focus { border-color: #1a73e8; outline: 2px solid rgba(26,115,232,0.2); }
 
@@ -168,28 +166,6 @@
         }
         .citation-trigger:hover { background: #e8eaed; border-color: #dadce0; }
         .citation-trigger svg { width: 16px; height: 16px; fill: #5f6368; }
-
-        /* --- CALCULATION TABLES --- */
-        .calc-table {
-            width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 13px;
-        }
-        .calc-table th { background: #f1f3f4; padding: 8px; border: 1px solid #dadce0; text-align: left; color: #444; }
-        .calc-table td { padding: 6px; border: 1px solid #dadce0; }
-        .calc-table input { width: 100%; border: 1px solid #eee; padding: 4px; box-sizing: border-box; }
-        .calc-table input:focus { border-color: #1a73e8; }
-        
-        .table-controls {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-        }
-        .btn-small {
-            background: #fff; border: 1px solid #dadce0; padding: 4px 12px; border-radius: 16px;
-            font-size: 12px; cursor: pointer; color: #1f1f1f; width: auto; display: inline-block;
-        }
-        .btn-small:hover { background: #f1f3f4; }
-        .btn-add { color: #0b57d0; border-color: #d3e3fd; background: #e8f0fe; }
-        
-        .summary-row td { font-weight: bold; background: #f8f9fa; }
-        .del-btn { color: #c5221f; cursor: pointer; font-weight: bold; text-align: center; }
 
         /* --- DOCUMENT VIEWER MODAL (GEMINI STYLE) --- */
         .doc-modal-overlay {
@@ -324,128 +300,91 @@
     <div class="brand"><span>🔥</span> PCCC PRO</div>
     
     <div style="padding: 15px 20px 5px; font-size: 11px; font-weight: 700; color: #8e918f;">CÔNG CỤ CHÍNH</div>
-    <div class="menu-item" onclick="showTab('tong-hop', this)">📋 Tổng hợp & Kiểm tra</div>
+    <div class="menu-item active highlight-menu" onclick="showTab('tong-hop', this)">📋 Tổng hợp & Kiểm tra</div>
 
-    <div style="padding: 15px 20px 5px; font-size: 11px; font-weight: 700; color: #8e918f;">TRA CỨU & TÍNH TOÁN</div>
+    <div style="padding: 15px 20px 5px; font-size: 11px; font-weight: 700; color: #8e918f;">TRA CỨU NHANH</div>
     <div class="menu-item" onclick="showTab('nhom-nha', this)">🔍 Nhóm nhà (F)</div>
     <div class="menu-item" onclick="showTab('bac-chiu-lua', this)">🏗️ Bậc Chịu Lửa</div>
-    <div class="menu-item active highlight-menu" onclick="showTab('thoat-nan', this)">🏃 Tính Thoát Nạn (Chi tiết)</div>
     <div class="menu-item" onclick="showTab('cau-kien', this)">🧱 Cấu kiện (Bảng 1)</div>
+    <div class="menu-item" onclick="showTab('thoat-nan', this)">🏃 Thoát nạn</div>
 </div>
 
 <!-- MAIN CONTENT -->
 <div class="main-content">
 
     <!-- DASHBOARD TỔNG HỢP -->
-    <div id="tong-hop" class="section">
-        <h2 style="margin-top:0">Kiểm tra Tổng quan</h2>
+    <div id="tong-hop" class="section active">
+        <h2 style="margin-top:0">Kiểm tra & Tính toán PCCC</h2>
+        
         <div class="card">
-            <p>Sử dụng tab này để kiểm tra nhanh Bậc chịu lửa và Khoảng cách. Để tính toán số người chi tiết, vui lòng qua tab <strong>Tính Thoát Nạn</strong>.</p>
             <div class="form-grid">
-                 <div><label>Chiều cao (m):</label><input type="number" id="inp-height" placeholder="18.5"></div>
-                 <div><label>Công năng:</label>
-                    <select id="inp-function">
+                <!-- 1. QUY MÔ -->
+                <div>
+                    <div class="form-section-title">1. Quy mô công trình</div>
+                    <label>Chiều cao PCCC (m):</label>
+                    <input type="number" id="inp-height" placeholder="VD: 18.5">
+                    <div style="margin-top:10px"><label>Số tầng nổi:</label>
+                    <input type="number" id="inp-floors" placeholder="VD: 5"></div>
+                    <div style="margin-top:10px"><label>Diện tích sàn max (m²):</label>
+                    <input type="number" id="inp-area" placeholder="VD: 800"></div>
+                </div>
+
+                <!-- 2. CÔNG NĂNG -->
+                <div>
+                    <div class="form-section-title">2. Công năng & Sử dụng</div>
+                    <label>Loại công trình:</label>
+                    <select id="inp-function" onchange="toggleRiskInput()">
+                        <option value="">-- Chọn --</option>
                         <option value="F1.3">F1.3 - Chung cư</option>
                         <option value="F4.3">F4.3 - Văn phòng</option>
+                        <option value="F3.1">F3.1 - Thương mại</option>
+                        <option value="F5.1">F5.1 - Nhà xưởng</option>
+                        <option value="F1.2">F1.2 - Khách sạn</option>
                     </select>
-                 </div>
-            </div>
-            <br>
-            <button class="btn" onclick="runCheckAll()">KIỂM TRA NHANH</button>
-        </div>
-        <div id="report-container"></div>
-    </div>
+                    <div id="risk-container" style="display:none; margin-top:10px">
+                        <label>Hạng sản xuất (F5):</label>
+                        <select id="inp-risk">
+                            <option value="C">Hạng C</option>
+                            <option value="A">Hạng A</option>
+                            <option value="B">Hạng B</option>
+                            <option value="D">Hạng D</option>
+                            <option value="E">Hạng E</option>
+                        </select>
+                    </div>
+                    <!-- Auto Grade Display -->
+                    <div style="margin-top:15px; padding:10px; background:#e8f0fe; border-radius:6px; font-size:13px; border: 1px solid #d2e3fc;">
+                        <span style="color:#1967d2; font-weight:bold">Tự động xác định:</span><br>
+                        Bậc chịu lửa yêu cầu: <span id="auto-grade-display" style="font-weight:bold; color:#b91c1c">...</span>
+                    </div>
+                </div>
 
-    <!-- TAB 3: TÍNH TOÁN THOÁT NẠN CHI TIẾT (TÍCH HỢP) -->
-    <div id="thoat-nan" class="section active">
-        <h2>Bảng tính Mật độ & Khả năng thoát nạn</h2>
-        
-        <!-- PHẦN 1: TÍNH SỐ NGƯỜI -->
-        <div class="card">
-            <div class="form-section-title">1. Bảng tính Mật độ người (Occupancy Load)</div>
-            <div style="font-size:13px; color:#555; margin-bottom:10px;">
-                Nguyên tắc: <code>Số người = Diện tích / Hệ số (m²/người)</code>
-            </div>
-            
-            <table class="calc-table" id="room-table">
-                <thead>
-                    <tr>
-                        <th>Tên phòng / Khu vực</th>
-                        <th width="120">Diện tích (m²)</th>
-                        <th width="120">Hệ số (m²/người)</th>
-                        <th width="100">Số người</th>
-                        <th width="40"></th>
-                    </tr>
-                </thead>
-                <tbody id="room-tbody">
-                    <!-- Rows added by JS -->
-                </tbody>
-                <tfoot>
-                    <tr class="summary-row">
-                        <td colspan="3" style="text-align:right;">Tổng số người cần thoát nạn:</td>
-                        <td id="total-people" style="color:#b91c1c; font-size:16px;">0</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-            <div class="table-controls">
-                <button class="btn-small btn-add" onclick="addRoomRow()">+ Thêm phòng</button>
-            </div>
-        </div>
+                <!-- 3. THOÁT NẠN -->
+                <div>
+                    <div class="form-section-title">3. Thoát nạn (Tính toán)</div>
+                    <label>Tổng số người (tầng đông nhất):</label>
+                    <input type="number" id="inp-people" placeholder="VD: 150">
+                </div>
 
-        <!-- PHẦN 2: TÍNH KHẢ NĂNG THOÁT NẠN -->
-        <div class="card">
-            <div class="form-section-title">2. Bảng tính Khả năng thoát nạn (Egress Capacity)</div>
-            <div style="font-size:13px; color:#555; margin-bottom:10px;">
-                Nguyên tắc: <code>Khả năng = Chiều rộng / Hệ số dòng chảy</code>. Khả năng của lối ra = Min(Cửa, Thang).
-            </div>
-            <div style="display:flex; gap:20px; margin-bottom:15px; background:#f8f9fa; padding:10px; border-radius:4px;">
-                <div><label style="font-size:12px">Hệ số Cửa (m/người):</label><input type="number" id="factor-door" value="0.005" step="0.001" onchange="recalcAll()"></div>
-                <div><label style="font-size:12px">Hệ số Thang (m/người):</label><input type="number" id="factor-stair" value="0.0076" step="0.0001" onchange="recalcAll()"></div>
-                <div style="align-self:end; font-size:12px; color:#666;">(0.005 ~ 200 người/m; 0.0076 ~ 131 người/m)</div>
-            </div>
-
-            <table class="calc-table" id="exit-table">
-                <thead>
-                    <tr>
-                        <th>Tên Lối thoát (Exit)</th>
-                        <th width="100">Rộng Thang (m)</th>
-                        <th width="100">Rộng Cửa (m)</th>
-                        <th width="80">KN Thang</th>
-                        <th width="80">KN Cửa</th>
-                        <th width="100" style="background:#e6f4ea">Khả năng TT</th>
-                        <th width="40"></th>
-                    </tr>
-                </thead>
-                <tbody id="exit-tbody">
-                    <!-- Rows added by JS -->
-                </tbody>
-                <tfoot>
-                    <tr class="summary-row">
-                        <td colspan="5" style="text-align:right;">Tổng khả năng thoát nạn cung cấp:</td>
-                        <td id="total-capacity" style="color:#137333; font-size:16px;">0</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-            <div class="table-controls">
-                <button class="btn-small btn-add" onclick="addExitRow()">+ Thêm lối thoát</button>
-            </div>
-        </div>
-
-        <!-- PHẦN 3: KẾT LUẬN -->
-        <div class="report-card" id="egress-result-card" style="display:none">
-            <div class="report-header">
-                <div class="report-title">3. Kết quả kiểm tra</div>
-                <div class="status-badge" id="egress-status-badge">...</div>
-            </div>
-            <div id="egress-result-msg"></div>
-            <div style="margin-top:12px; border-top:1px solid #f0f0f0; padding-top:10px;">
-                 <div class="citation-trigger" onclick="openDocViewerForEgress()">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                    <span>Xem căn cứ pháp lý (QCVN 06:2022 - Mục 3)</span>
+                <!-- 4. VỊ TRÍ -->
+                <div>
+                    <div class="form-section-title">4. Khoảng cách an toàn</div>
+                    <label>Khoảng cách tới nhà bên cạnh (m):</label>
+                    <input type="number" id="inp-dist" placeholder="VD: 6">
+                    <div style="margin-top:10px">
+                        <label>Bậc chịu lửa nhà bên cạnh:</label>
+                        <select id="inp-neighbor-grade">
+                            <option value="1">Bậc I, II</option>
+                            <option value="2">Bậc III</option>
+                            <option value="3">Bậc IV, V</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            <button class="btn" onclick="runCheckAll()">TÍNH TOÁN & HIỂN THỊ CĂN CỨ</button>
+        </div>
+
+        <div id="report-container" style="display:none">
+            <!-- Results rendered here -->
         </div>
     </div>
 
@@ -453,6 +392,7 @@
     <div id="nhom-nha" class="section"><div class="card">Tính năng tra cứu nhóm nhà...</div></div>
     <div id="bac-chiu-lua" class="section"><div class="card">Tính năng tra cứu bậc chịu lửa...</div></div>
     <div id="cau-kien" class="section"><div class="card">Tính năng tra cứu cấu kiện...</div></div>
+    <div id="thoat-nan" class="section"><div class="card">Tính năng tra cứu thoát nạn...</div></div>
 </div>
 
 <!-- DOCUMENT VIEWER MODAL -->
@@ -470,193 +410,204 @@
 
 <!-- JAVASCRIPT -->
 <script>
-    // --- DỮ LIỆU VĂN BẢN GỐC ---
+    // --- DATABASE VĂN BẢN GỐC (GIẢ LẬP CÁC TRANG) ---
     const qcvnPages = {
-        38: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.2.4.</strong> Chiều rộng tổng cộng của vế thang, lối đi trên đường thoát nạn... được xác định tùy thuộc vào số lượng người... nhưng không được nhỏ hơn giá trị quy định:</p><ul><li>Nhà F1.1: <strong>1,25m</strong></li><li>Nhà F1.2, F2, F3, F4: <strong>1,00m</strong></li></ul>`,
-        39: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.1.</strong> Chiều rộng thủy của bản thang bộ... phải được tính toán...</p><p>a) Cửa đi: <strong>1.0m</strong> thông thường.</p><p>b) Vế thang: <strong>0.9m</strong> thông thường.</p>`,
-        40: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.2.</strong> Chiều rộng mặt bậc không nhỏ hơn 25cm...</p>`,
-        105: `<h4 style="text-align:center">PHỤ LỤC H</h4><p>Bảng H.4 - Số tầng giới hạn... Chung cư...</p>`,
-        106: `<h4 style="text-align:center">PHỤ LỤC H</h4><p>Ghi chú bổ sung...</p>`
+        // --- NHÓM THOÁT NẠN (37-41) ---
+        37: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p>Các quy định chung về thoát nạn...</p><p>3.1. Lối thoát nạn là lối đi...</p><p>3.2. Các lối ra thoát nạn...</p>`,
+        38: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.2.3.</strong> Các lối ra từ tầng hầm và tầng nửa hầm là lối ra thoát nạn khi thoát trực tiếp ra ngoài...</p><p><strong>3.2.4.</strong> Chiều rộng tổng cộng của vế thang, lối đi trên đường thoát nạn... phải được xác định tùy thuộc vào số lượng người... nhưng không được nhỏ hơn giá trị quy định:</p><ul style="list-style-type: disc; margin-left: 20px;"><li>Nhà F1.1: <strong>1,25m</strong> (nếu ≥ 3 tầng)</li><li>Nhà F1.2, F2, F3, F4: <strong>1,00m</strong> (tầng mặt đất), <strong>0,80m</strong> (các tầng khác)</li><li>Nhà khán đài, rạp hát: <strong>0,60m</strong></li></ul>`,
+        39: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.1.</strong> Chiều rộng thủy của bản thang bộ, chiếu nghỉ... phải được tính toán và không nhỏ hơn giá trị quy định dưới đây:</p><p>a) Chiều rộng của các lối ra thoát nạn (cửa đi)... phải không nhỏ hơn:</p><p>- 1,2 m đối với hành lang, bản thang dùng để thoát nạn cho hơn 15 người thuộc nhóm F1.1;</p><p>- <strong>1,0 m</strong> trong tất cả các trường hợp còn lại.</p><p>b) Chiều rộng của các vế thang bộ dùng để thoát nạn...:</p><p>- <strong>0,9 m</strong> đối với các trường hợp khác.</p>`,
+        40: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.2.</strong> Chiều rộng của mặt bậc thang không được nhỏ hơn 25 cm, còn chiều cao của bậc thang không được lớn hơn 22 cm.</p><p>Độ dốc của các cầu thang bộ trên các đường thoát nạn không được lớn hơn 1:1...</p>`,
+        41: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.4.</strong> Các lối ra thoát nạn phải được bố trí phân tán...</p>`,
+
+        // --- NHÓM BẬC CHỊU LỬA (103-107) ---
+        103: `<h4 style="text-align:center">PHỤ LỤC H</h4><p>Bảng H.1 - Số tầng giới hạn và diện tích khoang cháy của nhà trẻ, trường mẫu giáo...</p>`,
+        104: `<h4 style="text-align:center">PHỤ LỤC H (Quy định)</h4><p><strong>Bảng H.3 - Số tầng giới hạn và diện tích khoang cháy của nhà công cộng, nhà sản xuất, nhà kho</strong></p><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Cấp nguy hiểm KC</th><th>Chiều cao PCCC (m)</th><th>Diện tích khoang cháy (m2)</th></tr><tr><td>I</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>II</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>III</td><td>S0</td><td><= 28</td><td>1200</td></tr></table>`,
+        105: `<h4 style="text-align:center">PHỤ LỤC H (Tiếp theo)</h4><p><strong>Bảng H.4 - Số tầng giới hạn và diện tích khoang cháy của nhà chung cư, nhà ký túc xá (F1.2, F1.3)</strong></p><table border="1" cellpadding="5" style="width:100%; border-collapse:collapse; margin-top:10px;"><tr style="background:#eee"><th>Bậc chịu lửa</th><th>Cấp nguy hiểm cháy KC</th><th>Chiều cao PCCC tối đa (m)</th><th>Diện tích khoang cháy tối đa (m2)</th></tr><tr><td>I</td><td>S0</td><td><= 75</td><td>2500</td></tr><tr><td>II</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>III</td><td>S0</td><td><= 28</td><td>1800</td></tr></table>`,
+        106: `<h4 style="text-align:center">PHỤ LỤC H (Tiếp theo)</h4><p>Ghi chú chung cho Phụ lục H:</p><p>- Khi nhà được trang bị hệ thống chữa cháy tự động, diện tích khoang cháy cho phép được tăng lên 100%.</p>`,
+        107: `<h4 style="text-align:center">PHỤ LỤC I</h4><p>Khoảng cách phòng cháy chống cháy...</p>`
     };
 
-    // --- LOGIC TÍNH TOÁN CHI TIẾT (TAB 3) ---
-    
-    // Dữ liệu mẫu ban đầu (giống file Excel)
-    const initialRooms = [
-        {name: "Hội trường", area: 306.47, factor: 0.65},
-        {name: "Bếp", area: 31.0, factor: 9.3},
-        {name: "Phòng họp 1", area: 92.6, factor: 0.65}
-    ];
-    
-    const initialExits = [
-        {name: "Lối thoát hiểm 1", wStair: 1.099, wDoor: 0.882},
-        {name: "Lối thoát hiểm 2", wStair: 1.202, wDoor: 0.887}
-    ];
+    // --- HÀM LOGIC CHÍNH ---
+    function runCheckAll() {
+        const inputs = {
+            h: parseFloat(document.getElementById('inp-height').value) || 0,
+            f: parseInt(document.getElementById('inp-floors').value) || 0,
+            area: parseFloat(document.getElementById('inp-area').value) || 0,
+            people: parseInt(document.getElementById('inp-people').value) || 0,
+            func: document.getElementById('inp-function').value,
+            dist: parseFloat(document.getElementById('inp-dist').value) || 0,
+            nGrade: document.getElementById('inp-neighbor-grade').value
+        };
 
-    function initTable() {
-        initialRooms.forEach(r => addRoomRow(r.name, r.area, r.factor));
-        initialExits.forEach(e => addExitRow(e.name, e.wStair, e.wDoor));
-        recalcAll();
-    }
+        if (!inputs.func || !inputs.h) {
+            alert("Vui lòng nhập Công năng và Chiều cao!");
+            return;
+        }
 
-    function addRoomRow(name="", area="", factor="0.65") {
-        const tbody = document.getElementById('room-tbody');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" value="${name}" placeholder="Tên phòng"></td>
-            <td><input type="number" class="inp-area" value="${area}" oninput="recalcAll()"></td>
-            <td><input type="number" class="inp-factor" value="${factor}" oninput="recalcAll()"></td>
-            <td class="res-people" style="font-weight:bold; text-align:center">-</td>
-            <td><div class="del-btn" onclick="removeRow(this)">✕</div></td>
-        `;
-        tbody.appendChild(tr);
-    }
+        const report = document.getElementById('report-container');
+        report.style.display = 'block';
+        report.innerHTML = ''; 
 
-    function addExitRow(name="", wStair="", wDoor="") {
-        const tbody = document.getElementById('exit-tbody');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" value="${name}" placeholder="Tên lối thoát"></td>
-            <td><input type="number" class="inp-wstair" value="${wStair}" oninput="recalcAll()"></td>
-            <td><input type="number" class="inp-wdoor" value="${wDoor}" oninput="recalcAll()"></td>
-            <td class="res-cap-stair" style="text-align:center; color:#666">-</td>
-            <td class="res-cap-door" style="text-align:center; color:#666">-</td>
-            <td class="res-cap-final" style="text-align:center; font-weight:bold; background:#f0fdf4">-</td>
-            <td><div class="del-btn" onclick="removeRow(this)">✕</div></td>
-        `;
-        tbody.appendChild(tr);
-    }
-
-    function removeRow(btn) {
-        btn.closest('tr').remove();
-        recalcAll();
-    }
-
-    function recalcAll() {
-        // 1. Calc Occupancy
-        let totalPeople = 0;
-        document.querySelectorAll('#room-tbody tr').forEach(tr => {
-            const area = parseFloat(tr.querySelector('.inp-area').value) || 0;
-            const factor = parseFloat(tr.querySelector('.inp-factor').value) || 1;
-            const people = factor > 0 ? Math.ceil(area / factor) : 0; // Round up person
-            tr.querySelector('.res-people').textContent = people;
-            totalPeople += people;
-        });
-        document.getElementById('total-people').textContent = totalPeople;
-
-        // 2. Calc Capacity
-        let totalCapacity = 0;
-        const fDoor = parseFloat(document.getElementById('factor-door').value) || 0.005;
-        const fStair = parseFloat(document.getElementById('factor-stair').value) || 0.0076;
-
-        document.querySelectorAll('#exit-tbody tr').forEach(tr => {
-            const wStair = parseFloat(tr.querySelector('.inp-wstair').value) || 0;
-            const wDoor = parseFloat(tr.querySelector('.inp-wdoor').value) || 0;
-            
-            // Excel logic: Capacity = Width / Factor
-            const capStair = wStair > 0 ? Math.floor(wStair / fStair) : 0;
-            const capDoor = wDoor > 0 ? Math.floor(wDoor / fDoor) : 0;
-            
-            // Bottleneck logic: Min of Door vs Stair
-            // Note: If one is 0 (missing), use the other? Or strict min? 
-            // Let's assume if Stair is 0 (e.g. ground floor exit), we take Door.
-            let finalCap = 0;
-            if (capStair > 0 && capDoor > 0) finalCap = Math.min(capStair, capDoor);
-            else finalCap = Math.max(capStair, capDoor);
-
-            tr.querySelector('.res-cap-stair').textContent = capStair;
-            tr.querySelector('.res-cap-door').textContent = capDoor;
-            tr.querySelector('.res-cap-final').textContent = finalCap;
-            totalCapacity += finalCap;
-        });
-        document.getElementById('total-capacity').textContent = totalCapacity;
-
-        // 3. Update Result Card
-        const resCard = document.getElementById('egress-result-card');
-        const badge = document.getElementById('egress-status-badge');
-        const msg = document.getElementById('egress-result-msg');
+        // 1. TÍNH BẬC CHỊU LỬA
+        const autoGrade = calculateFireGrade(inputs);
+        document.getElementById('auto-grade-display').textContent = `Bậc ${autoGrade.grade}`;
         
-        resCard.style.display = 'block';
-        if (totalPeople === 0) {
-             badge.className = 'status-badge st-warn';
-             badge.textContent = 'CHƯA CÓ DỮ LIỆU';
-             msg.innerHTML = 'Vui lòng nhập diện tích phòng.';
-             return;
-        }
-
-        if (totalCapacity >= totalPeople) {
-            badge.className = 'status-badge st-ok';
-            badge.textContent = 'ĐẠT YÊU CẦU';
-            msg.innerHTML = `<div style="color:#137333">Tổng khả năng thoát nạn (${totalCapacity}) ≥ Tổng số người (${totalPeople}).<br>Dư thừa: ${totalCapacity - totalPeople} người.</div>`;
-        } else {
-            badge.className = 'status-badge st-err';
-            badge.textContent = 'KHÔNG ĐẠT';
-            msg.innerHTML = `<div style="color:#c5221f">Tổng khả năng thoát nạn (${totalCapacity}) < Tổng số người (${totalPeople}).<br>Thiếu: ${totalPeople - totalCapacity} người.<br>Cần mở rộng cửa hoặc thang.</div>`;
-        }
-    }
-
-    // --- DOCUMENT VIEWER LOGIC (MULTI-CITATION) ---
-    function openDocViewerForEgress() {
-        openDocViewer([
-            { page: 38, label: 'Mục 3.2.4 (Định mức người)', highlights: ["số lượng người", "1,00m", "0,80m"] },
-            { page: 39, label: 'Mục 3.4.1 (Chiều rộng tối thiểu)', highlights: ["1,2 m", "1,0 m", "0,9 m"] }
+        // Render Card 1
+        renderReportCard(report, '1. Xác định Bậc chịu lửa & Quy mô', autoGrade.status, `
+            <div class="report-row"><span class="report-label">Chiều cao:</span> <span class="report-val">${inputs.h} m</span></div>
+            <div class="report-row"><span class="report-label">Công năng:</span> <span class="report-val">${inputs.func}</span></div>
+            <div class="calc-box">
+                → Tra Bảng H.4 (Phụ lục H) cho Chung cư / H.3 cho công năng khác<br>
+                → Kết luận: <strong>BẬC ${autoGrade.grade}</strong>
+            </div>
+        `, [
+            // Citation object array
+            { page: 105, label: 'Bảng H.4 (Đối chiếu F1.3)', highlights: ["F1.3", "Bậc "+autoGrade.grade, "2500", inputs.h > 50 ? "75" : "50"] },
+            { page: 106, label: 'Ghi chú Phụ lục H (Tăng diện tích)', highlights: ["chữa cháy tự động", "tăng lên 100%"] }
         ]);
+
+        // 2. TÍNH THOÁT NẠN
+        if (inputs.people > 0) {
+            const egress = calculateEgress(inputs.people, inputs.func);
+            
+            renderReportCard(report, '2. Tính toán Thoát nạn (Chi tiết)', 'ok', `
+                <div class="report-row"><span class="report-label">Số người:</span> <span class="report-val">${inputs.people}</span></div>
+                <div class="calc-box">
+                    1. Tính theo mật độ (Mục 3.2.4):<br>
+                    ${inputs.people} / 100 = <strong>${egress.widthCalc} m</strong><br><br>
+                    2. So sánh với tối thiểu (Mục 3.4.1):<br>
+                    Yêu cầu cửa: <strong>${egress.minAllowed} m</strong><br><br>
+                    3. Kết luận: Chọn <strong>${egress.finalWidth} m</strong>
+                </div>
+            `, [
+                // MULTIPLE CITATIONS FOR EGRESS
+                { page: 38, label: 'Mục 3.2.4 (Mật độ dòng người)', highlights: ["100 người", "1,00m", "0,80m"] },
+                { page: 39, label: 'Mục 3.4.1 (Chiều rộng tối thiểu)', highlights: ["1,0 m", "0,9 m", "1,2 m"] }
+            ]);
+        }
     }
 
+    // --- DOCUMENT VIEWER LOGIC (MULTI-PAGE SUPPORT) ---
     function openDocViewer(citations) {
+        // citations is an array of objects: [{page: 38, label: '...', highlights: []}, ...]
         const modal = document.getElementById('doc-modal');
         const content = document.getElementById('doc-viewer-content');
+        
         content.innerHTML = '';
 
         citations.forEach((cit, idx) => {
+            const centerPage = cit.page;
+            // Render Group Container
             const groupDiv = document.createElement('div');
             groupDiv.className = 'citation-group';
             
+            // Header for the basis
             const titleDiv = document.createElement('div');
             titleDiv.className = 'citation-group-title';
             titleDiv.innerText = `CĂN CỨ ${idx + 1}: ${cit.label}`;
             groupDiv.appendChild(titleDiv);
 
-            [cit.page - 1, cit.page, cit.page + 1].forEach((pageNum, pIdx) => {
-                const pageData = qcvnPages[pageNum] || `<div style="text-align:center; color:#999; padding-top:50px">(Trang ${pageNum})</div>`;
+            // Pages: center-1, center, center+1
+            const pagesToRender = [centerPage - 1, centerPage, centerPage + 1];
+
+            pagesToRender.forEach((pageNum, pIdx) => {
+                const pageData = qcvnPages[pageNum] || `<div style="text-align:center; padding-top:100px; color:#999;">(Nội dung trang ${pageNum} đang cập nhật...)</div>`;
+                
                 const pageDiv = document.createElement('div');
                 pageDiv.className = 'doc-page';
                 
-                let label = '';
+                // Labels
+                let labelText = '';
                 let labelClass = 'page-label';
-                if (pIdx === 1) { label = `TRANG CĂN CỨ (${pageNum})`; labelClass += ' is-center'; }
-                else label = `TRANG ${pIdx === 0 ? 'TRƯỚC' : 'SAU'} (${pageNum})`;
+                if (pIdx === 0) labelText = `TRANG TRƯỚC (${pageNum})`;
+                if (pIdx === 1) { labelText = `TRANG CĂN CỨ (${pageNum})`; labelClass += ' is-center'; }
+                if (pIdx === 2) labelText = `TRANG SAU (${pageNum})`;
 
-                let htmlContent = pageData;
-                if (pIdx === 1 && cit.highlights) {
-                    cit.highlights.forEach(kw => {
-                        try { htmlContent = htmlContent.replace(new RegExp(`(${kw})`, 'gi'), '<mark class="highlight">$1</mark>'); } catch(e){}
+                // Highlighting (Only for center page)
+                let processedContent = pageData;
+                if (pIdx === 1 && cit.highlights && cit.highlights.length > 0) {
+                    cit.highlights.forEach(keyword => {
+                        try {
+                            // Simple replace, caution with HTML tags in production
+                            const regex = new RegExp(`(${keyword})`, 'gi');
+                            processedContent = processedContent.replace(regex, '<mark class="highlight">$1</mark>');
+                        } catch(e) {}
                     });
                 }
 
-                pageDiv.innerHTML = `<div class="${labelClass}">${label}</div><div class="doc-page-header-text">QCVN 06:2022</div>${htmlContent}<div class="doc-page-number">Trang ${pageNum}</div>`;
+                pageDiv.innerHTML = `
+                    <div class="${labelClass}">${labelText}</div>
+                    <div class="doc-page-header-text">QCVN 06:2022/BXD - BỘ XÂY DỰNG</div>
+                    ${processedContent}
+                    <div class="doc-page-number">Trang ${pageNum}</div>
+                `;
                 groupDiv.appendChild(pageDiv);
             });
+
             content.appendChild(groupDiv);
         });
+
         modal.style.display = 'flex';
     }
 
-    function closeDocViewer() { document.getElementById('doc-modal').style.display = 'none'; }
+    function closeDocViewer() {
+        document.getElementById('doc-modal').style.display = 'none';
+    }
+
+    // --- HELPER LOGIC ---
+    function calculateFireGrade(inp) {
+        let g = 'III';
+        if (inp.h > 50) g = 'I';
+        else if (inp.h > 28) g = 'II';
+        return { grade: g, status: 'ok' };
+    }
+
+    function calculateEgress(people, func) {
+        let factor = 100;
+        let minW = 1.0;
+        if (func === 'F1.1') minW = 1.2;
+        
+        let wCalc = people / factor;
+        let wFinal = Math.max(wCalc, minW);
+        return { widthCalc: wCalc.toFixed(2), minAllowed: minW, finalWidth: wFinal.toFixed(2) };
+    }
+
+    // Updated renderReportCard to accept citations array
+    function renderReportCard(container, title, status, contentHTML, citations) {
+        const statusClass = status === 'ok' ? 'st-ok' : (status === 'err' ? 'st-err' : 'st-warn');
+        const statusText = status === 'ok' ? 'ĐẠT / ĐÃ TÍNH' : 'LƯU Ý';
+        
+        // Serialize citations for onClick
+        const citString = JSON.stringify(citations).replace(/"/g, "&quot;");
+
+        const html = `
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-title">${title}</div>
+                    <div class="status-badge ${statusClass}">${statusText}</div>
+                </div>
+                <div>${contentHTML}</div>
+                <div style="margin-top:12px; border-top:1px solid #f0f0f0; padding-top:10px;">
+                    <div class="citation-trigger" onclick="openDocViewer(${citString})">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <span>Xem căn cứ pháp lý chi tiết (${citations.length} mục)</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
     function showTab(id, el) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
         el.classList.add('active');
     }
-
-    // Init
-    initTable();
-    
-    // Dummy functions for other tabs
-    function toggleRiskInput() {}
-    function runCheckAll() { alert("Vui lòng sử dụng tab 'Tính Thoát Nạn' để xem tính năng mới."); }
-
+    function toggleRiskInput() {
+        const f = document.getElementById('inp-function').value;
+        document.getElementById('risk-container').style.display = f.startsWith('F5') ? 'block' : 'none';
+    }
 </script>
 
 </body>
