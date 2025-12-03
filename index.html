@@ -15,6 +15,7 @@
             --text: #1f1f1f;
             --border: #e5e7eb;
             --highlight: #fde047;
+            --link: #0b57d0;
         }
 
         body {
@@ -87,27 +88,67 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 30px; 
             margin-bottom: 20px;
         }
 
         .form-section-title {
             grid-column: 1 / -1;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
-            color: #5f6368;
+            color: #b91c1c;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-top: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
         }
 
-        label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: #3c4043; }
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label { 
+            display: flex; 
+            align-items: center;
+            margin-bottom: 6px; 
+            font-size: 14px; 
+            font-weight: 500; 
+            color: #3c4043; 
+        }
+        .label-note { font-size: 12px; color: #666; font-weight: 400; font-style: italic; margin-left: 4px; }
+        
+        /* INFO ICON STYLE */
+        .info-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e8f0fe;
+            color: var(--link);
+            font-size: 11px;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            margin-left: 6px;
+            cursor: pointer;
+            border: 1px solid #d2e3fc;
+            transition: all 0.2s;
+        }
+        .info-icon:hover {
+            background: var(--link);
+            color: #fff;
+            transform: scale(1.1);
+        }
+
         input, select {
             width: 100%; padding: 10px;
             border: 1px solid #dadce0; border-radius: 4px;
             font-size: 14px; transition: 0.2s;
+            box-sizing: border-box;
         }
         input:focus, select:focus { border-color: #1a73e8; outline: 2px solid rgba(26,115,232,0.2); }
 
@@ -116,6 +157,7 @@
             padding: 12px; border: none; border-radius: 24px;
             font-weight: 500; cursor: pointer; width: 100%;
             transition: background 0.2s;
+            font-size: 15px;
         }
         .btn:hover { background: #0842a0; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
@@ -132,9 +174,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
-        .report-title { font-size: 16px; font-weight: 600; color: #1f1f1f; }
+        .report-title { font-size: 16px; font-weight: 700; color: #1f1f1f; }
         .status-badge { font-size: 12px; padding: 4px 12px; border-radius: 16px; font-weight: 500; }
         .st-ok { background: #e6f4ea; color: #137333; }
         .st-warn { background: #fef7e0; color: #ea8600; }
@@ -148,26 +192,43 @@
             font-size: 13px;
             color: #444746;
             border-left: 3px solid #0b57d0;
-            margin-bottom: 12px;
+            margin-top: 10px;
         }
 
-        .citation-trigger {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #f1f3f4;
-            border-radius: 18px;
-            font-size: 12px;
-            color: #1f1f1f;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .citation-trigger:hover { background: #e8eaed; border-color: #dadce0; }
-        .citation-trigger svg { width: 16px; height: 16px; fill: #5f6368; }
+        .report-table td {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            vertical-align: middle;
+        }
+        .report-label { color: #5f6368; font-size: 14px; }
+        .report-val { font-weight: 600; color: #202124; font-size: 14px; text-align: right; }
 
-        /* --- DOCUMENT VIEWER MODAL (GEMINI STYLE) --- */
+        /* TABLES FOR LOOKUP IN MAIN VIEW */
+        .lookup-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .lookup-table th, .lookup-table td {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            text-align: left;
+        }
+        .lookup-table th {
+            background-color: #f1f3f4;
+            font-weight: 600;
+            color: #444;
+            vertical-align: middle;
+        }
+        .lookup-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* --- DOCUMENT VIEWER MODAL --- */
         .doc-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
@@ -211,10 +272,9 @@
             flex-direction: column;
             gap: 40px;
             align-items: center;
-            background: #525659; /* Màu nền giống trình đọc PDF */
+            background: #525659;
         }
 
-        /* GROUP OF PAGES FOR ONE BASIS */
         .citation-group {
             width: 100%;
             max-width: 900px;
@@ -239,19 +299,39 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* TRANG GIẤY GIẢ LẬP */
         .doc-page {
             background: #fff;
             width: 100%; 
-            min-height: 1000px; /* Tỷ lệ A4 */
+            min-height: 1000px;
             padding: 50px 60px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             box-sizing: border-box;
-            font-family: 'Merriweather', serif; /* Font giống văn bản in */
+            font-family: 'Merriweather', serif;
             font-size: 14px;
             line-height: 1.6;
             color: #202124;
             position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* --- STYLES CHO BẢNG TRONG MODAL --- */
+        .doc-page table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+        }
+        .doc-page th, .doc-page td {
+            border: 1px solid #555;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .doc-page th {
+            background-color: #f5f5f5;
+            font-weight: 700;
+            text-align: center;
         }
 
         .doc-page-number {
@@ -272,24 +352,20 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .page-label.is-center { background: #b91c1c; font-weight: bold; }
 
-        /* HIGHLIGHT STYLES */
         mark.highlight {
-            background-color: rgba(253, 224, 71, 0.6); /* Vàng nhạt */
+            background-color: rgba(253, 224, 71, 0.6);
             color: #000;
             padding: 2px 0;
-            border-bottom: 2px solid #f59e0b; /* Gạch chân đậm */
+            border-bottom: 2px solid #f59e0b;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow: visible; }
             .sidebar { width: 100%; height: auto; }
             .main-content { padding: 15px; }
-            .doc-body { padding: 10px; }
-            .doc-page { padding: 20px; min-height: auto; }
+            .form-grid { grid-template-columns: 1fr; gap: 10px; }
         }
     </style>
 </head>
@@ -304,9 +380,11 @@
 
     <div style="padding: 15px 20px 5px; font-size: 11px; font-weight: 700; color: #8e918f;">TRA CỨU NHANH</div>
     <div class="menu-item" onclick="showTab('nhom-nha', this)">🔍 Nhóm nhà (F)</div>
+    <div class="menu-item" onclick="showTab('cong-nang-phong', this)">🏢 Tra cứu theo Phòng</div>
     <div class="menu-item" onclick="showTab('bac-chiu-lua', this)">🏗️ Bậc Chịu Lửa</div>
     <div class="menu-item" onclick="showTab('cau-kien', this)">🧱 Cấu kiện (Bảng 1)</div>
     <div class="menu-item" onclick="showTab('thoat-nan', this)">🏃 Thoát nạn</div>
+    <div class="menu-item" onclick="showTab('duong-xe', this)">🚑 Bãi đỗ & Đường xe</div>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -321,28 +399,66 @@
                 <!-- 1. QUY MÔ -->
                 <div>
                     <div class="form-section-title">1. Quy mô công trình</div>
-                    <label>Chiều cao PCCC (m):</label>
-                    <input type="number" id="inp-height" placeholder="VD: 18.5">
-                    <div style="margin-top:10px"><label>Số tầng nổi:</label>
-                    <input type="number" id="inp-floors" placeholder="VD: 5"></div>
-                    <div style="margin-top:10px"><label>Diện tích sàn max (m²):</label>
-                    <input type="number" id="inp-area" placeholder="VD: 800"></div>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <div class="input-group" style="flex:1">
+                            <label>Chiều cao PCCC (m):
+                                <span class="info-icon" onclick='openDocViewer([{page:8, label:"Mục 1.4.9 - Chiều cao PCCC", highlights:["Chiều cao PCCC"]}])'>i</span>
+                            </label>
+                            <input type="number" id="inp-height" placeholder="Đến mép dưới cửa sổ...">
+                        </div>
+                        <div class="input-group" style="flex:1">
+                            <label>Số tầng:
+                                <span class="info-icon" onclick='openDocViewer([{page:14, label:"Mục 1.4.50 - Số tầng nhà", highlights:["Số tầng nhà"]}])'>i</span>
+                            </label>
+                            <input type="number" id="inp-floors" placeholder="Gồm cả hầm...">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Diện tích xây dựng (m²):
+                            <span class="info-icon" onclick='openDocViewer([{page:84, label:"Mục A.1.2.1 - Diện tích xây dựng", highlights:["Diện tích xây dựng"]}])'>i</span>
+                        </label>
+                        <input type="number" id="inp-build-area" placeholder="Diện tích chiếm đất...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Diện tích sàn 1 tầng (m²): <span class="label-note">(tra Phụ lục H)</span>
+                            <span class="info-icon" onclick='openDocViewer([{page:161, label:"Mục H.6 - Tính diện tích khoang cháy", highlights:["Diện tích một tầng"]}])'>i</span>
+                        </label>
+                        <input type="number" id="inp-area" placeholder="VD: 800">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Khối tích nhà (m³): <span class="label-note">(nhà F5, công cộng)</span>
+                            <span class="info-icon" onclick='openDocViewer([{page:13, label:"Mục 1.4.47 - Quy mô khối tích", highlights:["Quy mô khối tích"]}])'>i</span>
+                        </label>
+                        <input type="number" id="inp-volume" placeholder="Tổng khối tích...">
+                    </div>
                 </div>
 
-                <!-- 2. CÔNG NĂNG -->
+                <!-- 2. CÔNG NĂNG & KHÁC -->
                 <div>
+                    <!-- Công năng -->
                     <div class="form-section-title">2. Công năng & Sử dụng</div>
-                    <label>Loại công trình:</label>
-                    <select id="inp-function" onchange="toggleRiskInput()">
-                        <option value="">-- Chọn --</option>
-                        <option value="F1.3">F1.3 - Chung cư</option>
-                        <option value="F4.3">F4.3 - Văn phòng</option>
-                        <option value="F3.1">F3.1 - Thương mại</option>
-                        <option value="F5.1">F5.1 - Nhà xưởng</option>
-                        <option value="F1.2">F1.2 - Khách sạn</option>
-                    </select>
-                    <div id="risk-container" style="display:none; margin-top:10px">
-                        <label>Hạng sản xuất (F5):</label>
+                    <div class="input-group">
+                        <label>Loại công trình:
+                            <span class="info-icon" onclick='openDocViewer([{pages:[29,30,31], label:"Bảng 6 - Phân nhóm nhà theo công năng", highlights:["F1.3", "F4.3"]}])'>i</span>
+                        </label>
+                        <select id="inp-function" onchange="toggleRiskInput()">
+                            <option value="">-- Chọn --</option>
+                            <option value="F1.3">F1.3 - Chung cư</option>
+                            <option value="F4.3">F4.3 - Văn phòng</option>
+                            <option value="F3.1">F3.1 - Thương mại</option>
+                            <option value="F5.1">F5.1 - Nhà xưởng</option>
+                            <option value="F1.2">F1.2 - Khách sạn</option>
+                        </select>
+                    </div>
+
+                    <div id="risk-container" style="display:none;" class="input-group">
+                        <label>Hạng sản xuất (F5):
+                            <span class="info-icon" onclick='openDocViewer([{page:105, label:"Bảng C.1 - Hạng nguy hiểm cháy", highlights:["Hạng nguy hiểm cháy"]}])'>i</span>
+                        </label>
                         <select id="inp-risk">
                             <option value="C">Hạng C</option>
                             <option value="A">Hạng A</option>
@@ -351,32 +467,39 @@
                             <option value="E">Hạng E</option>
                         </select>
                     </div>
+
+                    <!-- Thoát nạn -->
+                    <div class="form-section-title" style="margin-top:20px">3. Thoát nạn & KC An toàn</div>
+                    <div class="input-group">
+                        <label>Tổng số người (tầng đông nhất):
+                            <span class="info-icon" onclick='openDocViewer([{pages:[144,145], label:"Bảng G.9 - Hệ số không gian sàn", highlights:["Hệ số không gian sàn"]}])'>i</span>
+                        </label>
+                        <input type="number" id="inp-people" placeholder="VD: 150">
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <div class="input-group" style="flex:1">
+                            <label>KC tới nhà bên (m):
+                                <span class="info-icon" onclick='openDocViewer([{pages:[119,120], label:"Bảng E.1 - Khoảng cách PCCC", highlights:["Khoảng cách phòng cháy"]}] )'>i</span>
+                            </label>
+                            <input type="number" id="inp-dist" placeholder="VD: 6">
+                        </div>
+                        <div class="input-group" style="flex:1">
+                            <label>Bậc chịu lửa nhà bên:
+                                <span class="info-icon" onclick='openDocViewer([{pages:[26,27], label:"Bảng 4 - Bậc chịu lửa", highlights:["Bậc chịu lửa"]}])'>i</span>
+                            </label>
+                            <select id="inp-neighbor-grade">
+                                <option value="1">Bậc I, II</option>
+                                <option value="2">Bậc III</option>
+                                <option value="3">Bậc IV, V</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <!-- Auto Grade Display -->
                     <div style="margin-top:15px; padding:10px; background:#e8f0fe; border-radius:6px; font-size:13px; border: 1px solid #d2e3fc;">
-                        <span style="color:#1967d2; font-weight:bold">Tự động xác định:</span><br>
-                        Bậc chịu lửa yêu cầu: <span id="auto-grade-display" style="font-weight:bold; color:#b91c1c">...</span>
-                    </div>
-                </div>
-
-                <!-- 3. THOÁT NẠN -->
-                <div>
-                    <div class="form-section-title">3. Thoát nạn (Tính toán)</div>
-                    <label>Tổng số người (tầng đông nhất):</label>
-                    <input type="number" id="inp-people" placeholder="VD: 150">
-                </div>
-
-                <!-- 4. VỊ TRÍ -->
-                <div>
-                    <div class="form-section-title">4. Khoảng cách an toàn</div>
-                    <label>Khoảng cách tới nhà bên cạnh (m):</label>
-                    <input type="number" id="inp-dist" placeholder="VD: 6">
-                    <div style="margin-top:10px">
-                        <label>Bậc chịu lửa nhà bên cạnh:</label>
-                        <select id="inp-neighbor-grade">
-                            <option value="1">Bậc I, II</option>
-                            <option value="2">Bậc III</option>
-                            <option value="3">Bậc IV, V</option>
-                        </select>
+                        <span style="color:#1967d2; font-weight:bold">Tự động xác định sơ bộ:</span><br>
+                        Bậc chịu lửa yêu cầu: <span id="auto-grade-display" style="font-weight:bold; color:#b91c1c">---</span>
                     </div>
                 </div>
             </div>
@@ -388,11 +511,237 @@
         </div>
     </div>
 
-    <!-- Placeholders for other tabs -->
-    <div id="nhom-nha" class="section"><div class="card">Tính năng tra cứu nhóm nhà...</div></div>
-    <div id="bac-chiu-lua" class="section"><div class="card">Tính năng tra cứu bậc chịu lửa...</div></div>
-    <div id="cau-kien" class="section"><div class="card">Tính năng tra cứu cấu kiện...</div></div>
-    <div id="thoat-nan" class="section"><div class="card">Tính năng tra cứu thoát nạn...</div></div>
+    <!-- TRA CỨU THEO CÔNG NĂNG PHÒNG -->
+    <div id="cong-nang-phong" class="section">
+        <h2 style="margin-top:0">Tra cứu nhanh theo Công năng Phòng</h2>
+        
+        <!-- Bảng Mật độ người & Thoát nạn -->
+        <div class="card">
+            <div class="form-section-title">1. Mật độ người & Khoảng cách Thoát nạn (Bảng G.9 & G.2)</div>
+            <div class="input-group">
+                <input type="text" id="search-room-func" onkeyup="filterTable('table-room-func', 'search-room-func')" placeholder="🔍 Nhập tên phòng (vd: Văn phòng, Bếp, Kho...)">
+            </div>
+            <table class="lookup-table" id="table-room-func">
+                <thead>
+                    <tr>
+                        <th>Loại phòng / Công năng</th>
+                        <th>Hệ số sàn (m²/người) <span class="info-icon" onclick='openDocViewer([{pages:[144,145], label:"Bảng G.9", highlights:["Hệ số không gian sàn"]}])'>i</span></th>
+                        <th>KC thoát nạn Max (m) <sup>(*)</sup> <span class="info-icon" onclick='openDocViewer([{pages:[138,139], label:"Bảng G.2a, G.2b", highlights:["Khoảng cách giới hạn"]}])'>i</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Văn phòng, Khu làm việc</td><td>6,0</td><td>50 (Bậc I, II); 40 (Bậc III, IV)</td></tr>
+                    <tr><td>Hội trường, Phòng họp, Ăn uống</td><td>1,0</td><td>60 (Bậc I, II); 40 (Bậc IV)</td></tr>
+                    <tr><td>Sảnh, Siêu thị, Cửa hàng</td><td>3,0</td><td>60 (Bậc I, II); 40 (Bậc IV)</td></tr>
+                    <tr><td>Phòng học, Đào tạo</td><td>1,5</td><td>50 (Bậc I, II)</td></tr>
+                    <tr><td>Phòng ngủ (Khách sạn, Nhà ở)</td><td>8,0</td><td>40 (Cửa giữa 2 thang); 25 (Cụt)</td></tr>
+                    <tr><td>Gara ô tô</td><td>-</td><td>40 (Cửa giữa 2 thang); 20 (Cụt)</td></tr>
+                    <tr><td>Kho, Lưu trữ</td><td>30,0</td><td>Theo Bảng G.3 (Tùy khối tích)</td></tr>
+                    <tr><td>Khu tập thể thao, Gym</td><td>5,0</td><td>-</td></tr>
+                </tbody>
+            </table>
+            <div style="font-size:12px; color:#666; margin-top:5px">(*) Khoảng cách max: Tính từ cửa phòng đến lối ra thoát nạn gần nhất (đối với phòng có cửa bố trí ở giữa các buồng thang). Giá trị có thể thay đổi tùy mật độ người.</div>
+        </div>
+
+        <!-- Bảng Yêu cầu Vật liệu -->
+        <div class="card">
+            <div class="form-section-title">2. Yêu cầu Vật liệu Hoàn thiện & Trang trí (Phụ lục B) <span class="info-icon" onclick='openDocViewer([{page:104, label:"Bảng B.8 & B.9", highlights:["Phạm vi áp dụng của vật liệu"]}])'>i</span></div>
+            <div style="margin-bottom:10px; font-size:13px">
+                <strong>Quy ước cấp nguy hiểm cháy:</strong><br>
+                CV0: Không cháy | CV1: Cháy yếu, ít khói | CV2-4: Cháy, khói trung bình/cao
+            </div>
+            <table class="lookup-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Khu vực / Phòng</th>
+                        <th colspan="2">Cấp nguy hiểm cháy vật liệu tối thiểu (CV)</th>
+                    </tr>
+                    <tr>
+                        <th>Tường & Trần</th>
+                        <th>Sàn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color:#fef9c3">
+                        <td colspan="3"><strong>Trên đường thoát nạn (Hành lang, Sảnh, Thang bộ)</strong></td>
+                    </tr>
+                    <tr><td>Nhà cao > 17 tầng (hoặc > 50m)</td><td>CV0 (Không cháy)</td><td>CV1</td></tr>
+                    <tr><td>Nhà cao 9-17 tầng (28-50m)</td><td>CV1</td><td>CV2</td></tr>
+                    <tr><td>Nhà thấp tầng (< 9 tầng)</td><td>CV2</td><td>CV3</td></tr>
+                    
+                    <tr style="background-color:#fef9c3">
+                        <td colspan="3"><strong>Trong phòng chung (Hội trường, CLB, Thương mại...)</strong></td>
+                    </tr>
+                    <tr><td>Sức chứa > 800 người</td><td>CV0</td><td>CV2</td></tr>
+                    <tr><td>Sức chứa 300 - 800 người</td><td>CV1</td><td>CV2</td></tr>
+                    <tr><td>Sức chứa 50 - 300 người</td><td>CV2</td><td>CV3</td></tr>
+                    <tr><td>Phòng Karaoke, Vũ trường (F2.1)</td><td>CV1</td><td>CV2</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TRA CỨU NHÓM NHÀ -->
+    <div id="nhom-nha" class="section">
+        <h2 style="margin-top:0">Tra cứu Nhóm nhà (Phân loại công trình)</h2>
+        <div class="card">
+            <div class="input-group">
+                <input type="text" id="search-nhom-nha" onkeyup="filterTable('table-nhom-nha', 'search-nhom-nha')" placeholder="🔍 Nhập mã (F1, F2...) hoặc tên nhóm nhà để tìm kiếm...">
+            </div>
+            <table class="lookup-table" id="table-nhom-nha">
+                <thead>
+                    <tr>
+                        <th width="15%">Mã <span class="info-icon" onclick='openDocViewer([{pages:[29,30,31], label:"Bảng 6 - Phân nhóm nhà", highlights:["Mục đích sử dụng"]}])'>i</span></th>
+                        <th>Mô tả chức năng</th>
+                        <th>Ví dụ điển hình</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>F1.1</td><td>Nhà trẻ, mẫu giáo, bệnh viện</td><td>Bệnh viện nội trú, trường mầm non</td></tr>
+                    <tr><td>F1.2</td><td>Khách sạn, ký túc xá</td><td>Khách sạn, nhà nghỉ, KTX trường học</td></tr>
+                    <tr><td>F1.3</td><td>Nhà chung cư</td><td>Chung cư cao tầng, thấp tầng</td></tr>
+                    <tr><td>F2.1</td><td>Nhà hát, rạp chiếu phim</td><td>Rạp chiếu phim, nhà hát, câu lạc bộ</td></tr>
+                    <tr><td>F3.1</td><td>Thương mại</td><td>Siêu thị, cửa hàng bách hóa</td></tr>
+                    <tr><td>F3.2</td><td>Ăn uống</td><td>Nhà hàng, quán ăn, quán cà phê</td></tr>
+                    <tr><td>F4.1</td><td>Trường học</td><td>Trường tiểu học, trung học, đại học</td></tr>
+                    <tr><td>F4.3</td><td>Văn phòng</td><td>Trụ sở làm việc, văn phòng cho thuê</td></tr>
+                    <tr><td>F5.1</td><td>Nhà sản xuất</td><td>Nhà máy, xưởng sản xuất</td></tr>
+                    <tr><td>F5.2</td><td>Nhà kho</td><td>Kho hàng hóa, bãi đỗ xe</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TRA CỨU BẬC CHỊU LỬA -->
+    <div id="bac-chiu-lua" class="section">
+        <h2 style="margin-top:0">Tra cứu Bậc chịu lửa (Phụ lục H)</h2>
+        <div class="card">
+             <div class="form-section-title">1. Đối với Nhà Chung Cư (F1.3) <span class="info-icon" onclick='openDocViewer([{page:146, label:"Bảng H.1 - Nhà ở và KTX", highlights:["F1.3", "Nhà ở"]}])'>i</span></div>
+             <table class="lookup-table">
+                <thead><tr><th>Bậc chịu lửa</th><th>Chiều cao tối đa</th><th>Diện tích khoang cháy max</th></tr></thead>
+                <tbody>
+                    <tr><td>Bậc I</td><td>≤ 75 m</td><td>2.500 m²</td></tr>
+                    <tr><td>Bậc II</td><td>≤ 50 m</td><td>2.500 m²</td></tr>
+                    <tr><td>Bậc III</td><td>≤ 28 m</td><td>1.800 m²</td></tr>
+                </tbody>
+            </table>
+            
+            <div class="form-section-title" style="margin-top:20px">2. Đối với Nhà Công Cộng (F3, F4...) <span class="info-icon" onclick='openDocViewer([{page:147, label:"Bảng H.2 - Nhà công cộng", highlights:["Nhà công cộng"]}])'>i</span></div>
+             <table class="lookup-table">
+                <thead><tr><th>Bậc chịu lửa</th><th>Chiều cao tối đa</th><th>Diện tích khoang cháy max (1 tầng)</th></tr></thead>
+                <tbody>
+                    <tr><td>Bậc I</td><td>≤ 50 m</td><td>6.000 m²</td></tr>
+                    <tr><td>Bậc II</td><td>≤ 50 m</td><td>6.000 m²</td></tr>
+                    <tr><td>Bậc III</td><td>≤ 15 m</td><td>3.000 m²</td></tr>
+                    <tr><td>Bậc IV</td><td>≤ 9 m</td><td>2.000 m²</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TRA CỨU CẤU KIỆN -->
+    <div id="cau-kien" class="section">
+        <h2 style="margin-top:0">Bảng 1: Giới hạn chịu lửa của cấu kiện (REI)</h2>
+        <div class="card">
+            <table class="lookup-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Bộ phận nhà <span class="info-icon" onclick='openDocViewer([{pages:[26,27], label:"Bảng 4 - Giới hạn chịu lửa của cấu kiện", highlights:["Bộ phận chịu lực"]}])'>i</span></th>
+                        <th colspan="4" style="text-align:center">Bậc chịu lửa của nhà</th>
+                    </tr>
+                    <tr>
+                        <th>Bậc I</th>
+                        <th>Bậc II</th>
+                        <th>Bậc III</th>
+                        <th>Bậc IV</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Bộ phận chịu lực</strong> (Cột, Dầm, Tường)</td><td>R 120</td><td>R 90</td><td>R 45</td><td>R 15</td></tr>
+                    <tr><td><strong>Tường ngoài</strong> (Không chịu lực)</td><td>E 30</td><td>E 15</td><td>E 15</td><td>E 15</td></tr>
+                    <tr><td><strong>Sàn tầng</strong> (Giữa các tầng)</td><td>REI 60</td><td>REI 45</td><td>REI 45</td><td>REI 15</td></tr>
+                    <tr><td><strong>Mái</strong> (Không có tầng áp mái)</td><td>RE 30</td><td>RE 15</td><td>RE 15</td><td>RE 15</td></tr>
+                    <tr><td><strong>Tường buồng thang bộ</strong></td><td>REI 120</td><td>REI 90</td><td>REI 60</td><td>REI 45</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top:10px; font-style:italic; font-size:12px; color:#666">* R: Mất khả năng chịu lực | E: Mất tính toàn vẹn | I: Mất tính cách nhiệt</div>
+        </div>
+    </div>
+
+    <!-- TRA CỨU THOÁT NẠN -->
+    <div id="thoat-nan" class="section">
+        <h2 style="margin-top:0">Tra cứu số liệu Thoát nạn</h2>
+        <div class="card">
+            <div class="form-section-title">1. Chiều rộng lối thoát nạn tối thiểu (m) <span class="info-icon" onclick='openDocViewer([{page:39, label:"Mục 3.2.9 - Kích thước lối ra thoát nạn", highlights:["1,2 m", "0,8 m"]}])'>i</span></div>
+            <table class="lookup-table">
+                <thead><tr><th>Đối tượng</th><th>Số người</th><th>Kích thước min</th></tr></thead>
+                <tbody>
+                    <tr><td>Hành lang, vế thang (F1.1)</td><td>> 15 người</td><td>1.2 m</td></tr>
+                    <tr><td>Hành lang, vế thang (Khác)</td><td>> 50 người</td><td>1.2 m</td></tr>
+                    <tr><td>Cửa đi</td><td>-</td><td>0.8 m</td></tr>
+                    <tr><td>Các lối đi khác</td><td>-</td><td>1.0 m</td></tr>
+                </tbody>
+            </table>
+
+            <div class="form-section-title" style="margin-top:20px">2. Khoảng cách giới hạn cho phép (m) <span class="info-icon" onclick='openDocViewer([{page:137, label:"Bảng G.1 (Nhà ở)", highlights:["Khoảng cách giới hạn"]}])'>i</span></div>
+            <div style="font-size:13px; color:#444; margin-bottom:10px">Từ cửa căn hộ đến lối ra thoát nạn gần nhất (Nhà F1.3 - Bậc I, II):</div>
+            <table class="lookup-table">
+                <thead><tr><th>Vị trí cửa</th><th>Khoảng cách max</th></tr></thead>
+                <tbody>
+                    <tr><td>Giữa các buồng thang bộ</td><td>40 m</td></tr>
+                    <tr><td>Hành lang cụt</td><td>25 m</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TRA CỨU ĐƯỜNG XE -->
+    <div id="duong-xe" class="section">
+        <h2 style="margin-top:0">Tra cứu Bãi đỗ & Đường cho xe chữa cháy</h2>
+        <div class="card">
+            <!-- Simple Checker -->
+            <div class="form-section-title">Kiểm tra nhanh kích thước</div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Chiều rộng mặt đường (m):
+                        <span class="info-icon" onclick='openDocViewer([{page:74, label:"Mục 6.2.1.1 - Chiều rộng đường", highlights:["3,5 m"]}])'>i</span>
+                    </label>
+                    <input type="number" id="check-road-width" placeholder="VD: 4.0">
+                </div>
+                <div class="input-group">
+                    <label>Chiều cao thông thủy (m):
+                        <span class="info-icon" onclick='openDocViewer([{page:75, label:"Mục 6.2.1.3 - Chiều cao thông thủy", highlights:["4,5 m"]}])'>i</span>
+                    </label>
+                    <input type="number" id="check-road-height" placeholder="VD: 5.0">
+                </div>
+            </div>
+            <button class="btn" onclick="checkRoadAccess()">KIỂM TRA</button>
+            <div id="road-result" style="margin-top:10px; display:none" class="calc-box"></div>
+        </div>
+
+        <div class="card">
+            <div class="form-section-title">Quy định chung (QCVN 06:2022 - Mục 6.2)</div>
+            <table class="lookup-table">
+                <thead><tr><th>Thông số</th><th>Yêu cầu tối thiểu</th><th>Căn cứ</th></tr></thead>
+                <tbody>
+                    <tr><td>Chiều rộng mặt đường</td><td><strong>3.5 m</strong></td><td>Mục 6.2.1.1</td></tr>
+                    <tr><td>Chiều cao thông thủy</td><td><strong>4.5 m</strong></td><td>Mục 6.2.1.3</td></tr>
+                    <tr><td>Bãi quay xe (đường cụt > 46m)</td><td>12 x 12 m</td><td>Mục 6.2.5 <span class="info-icon" onclick='openDocViewer([{page:79, label:"Mục 6.4 - Bãi quay xe", highlights:["12 m x 12 m"]}])'>i</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+         <div class="card">
+            <div class="form-section-title">Bãi đỗ xe chữa cháy (Bảng 14) <span class="info-icon" onclick='openDocViewer([{page:75, label:"Bảng 14 - Kích thước bãi đỗ", highlights:["Bãi đỗ xe chữa cháy"]}])'>i</span></div>
+            <table class="lookup-table">
+                <thead><tr><th>Nhóm nhà</th><th>Chiều cao PCCC</th><th>Rộng x Dài (min)</th></tr></thead>
+                <tbody>
+                    <tr><td>F1.3 (Chung cư)</td><td>> 15 m</td><td>6 m x 15 m</td></tr>
+                    <tr><td>Các nhóm khác</td><td>> 15 m</td><td>6 m x 15 m</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <!-- DOCUMENT VIEWER MODAL -->
@@ -410,29 +759,61 @@
 
 <!-- JAVASCRIPT -->
 <script>
-    // --- DATABASE VĂN BẢN GỐC (GIẢ LẬP CÁC TRANG) ---
+    // --- DATABASE VĂN BẢN GỐC TỪ PDF ĐÃ CẬP NHẬT ĐẦY ĐỦ BẢNG ---
     const qcvnPages = {
-        // --- NHÓM THOÁT NẠN (37-41) ---
-        37: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p>Các quy định chung về thoát nạn...</p><p>3.1. Lối thoát nạn là lối đi...</p><p>3.2. Các lối ra thoát nạn...</p>`,
-        38: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.2.3.</strong> Các lối ra từ tầng hầm và tầng nửa hầm là lối ra thoát nạn khi thoát trực tiếp ra ngoài...</p><p><strong>3.2.4.</strong> Chiều rộng tổng cộng của vế thang, lối đi trên đường thoát nạn... phải được xác định tùy thuộc vào số lượng người... nhưng không được nhỏ hơn giá trị quy định:</p><ul style="list-style-type: disc; margin-left: 20px;"><li>Nhà F1.1: <strong>1,25m</strong> (nếu ≥ 3 tầng)</li><li>Nhà F1.2, F2, F3, F4: <strong>1,00m</strong> (tầng mặt đất), <strong>0,80m</strong> (các tầng khác)</li><li>Nhà khán đài, rạp hát: <strong>0,60m</strong></li></ul>`,
-        39: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.1.</strong> Chiều rộng thủy của bản thang bộ, chiếu nghỉ... phải được tính toán và không nhỏ hơn giá trị quy định dưới đây:</p><p>a) Chiều rộng của các lối ra thoát nạn (cửa đi)... phải không nhỏ hơn:</p><p>- 1,2 m đối với hành lang, bản thang dùng để thoát nạn cho hơn 15 người thuộc nhóm F1.1;</p><p>- <strong>1,0 m</strong> trong tất cả các trường hợp còn lại.</p><p>b) Chiều rộng của các vế thang bộ dùng để thoát nạn...:</p><p>- <strong>0,9 m</strong> đối với các trường hợp khác.</p>`,
-        40: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.2.</strong> Chiều rộng của mặt bậc thang không được nhỏ hơn 25 cm, còn chiều cao của bậc thang không được lớn hơn 22 cm.</p><p>Độ dốc của các cầu thang bộ trên các đường thoát nạn không được lớn hơn 1:1...</p>`,
-        41: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>3.4.4.</strong> Các lối ra thoát nạn phải được bố trí phân tán...</p>`,
+        // --- ĐỊNH NGHĨA QUY MÔ ---
+        8: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>1.4.9. Chiều cao phòng cháy chữa cháy (chiều cao PCCC)</strong></p><p>Chiều cao PCCC của nhà (không tính tầng kỹ thuật trên cùng) được xác định như sau:</p><ul style="list-style-type: disc; margin-left: 20px;"><li>Bằng khoảng cách lớn nhất tính từ mặt đường cho xe chữa cháy tiếp cận đến mép dưới của lỗ cửa (cửa sổ) mở trên tường ngoài của tầng trên cùng;</li><li>Bằng một nửa tổng khoảng cách tính từ mặt đường cho xe chữa cháy tiếp cận đến mặt sàn và đến trần của tầng trên cùng – khi không có lỗ cửa (cửa sổ).</li></ul><p><em>CHÚ THÍCH 1: Khi mái nhà được khai thác sử dụng thì chiều cao PCCC của nhà được xác định bằng khoảng cách lớn nhất từ mặt đường cho xe chữa cháy tiếp cận đến mép trên tường bao của mái.</em></p>`,
+        13: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>1.4.47. Quy mô khối tích</strong></p><p>Khối tích của một không gian trong phạm vi một nhà hoặc khoang cháy. Khối tích này không bao gồm các tường của thang máy được bảo vệ, buồng thang bộ thoát nạn và các không gian khác (ví dụ: khu vệ sinh và các buồng để đồ) được bao che bằng các tường có giới hạn chịu lửa không thấp hơn 60 phút, đồng thời các lối đi qua tường được bảo vệ bằng cửa ngăn cháy loại 2 có lắp cơ cấu tự đóng. Quy mô khối tích được tính dựa vào các kích thước sau:</p><p>a) Kích thước mặt bằng lấy theo khoảng cách giữa các bề mặt hoàn thiện phía trong của tường bao, hoặc ở tất cả các mặt không có tường bao thì tính đến một mặt phẳng thẳng đứng kéo đến cạnh ngoài trên cùng của sàn;</p><p>b) Chiều cao lấy theo khoảng cách từ bề mặt trên của sàn phía dưới đến mặt bề mặt dưới của sàn phía trên của không gian;</p>`,
+        14: `<h4 style="text-align:center">QCVN 06:2022/BXD</h4><p><strong>1.4.50. Số tầng nhà</strong></p><p>Số tầng của tòa nhà bao gồm toàn bộ các tầng trên mặt đất (kể cả tầng kỹ thuật, tầng tum) và tầng bán/nửa hầm, không bao gồm tầng áp mái.</p><p><em>CHÚ THÍCH: Tầng tum không tính vào số tầng nhà của công trình khi chỉ có chức năng sử dụng để bao che lồng cầu thang bộ giếng thang máy và che chắn các thiết bị kỹ thuật của công trình (nếu có), có diện tích mái tum không vượt quá 30% diện tích sàn mái.</em></p><p><strong>1.4.15. Diện tích sàn dùng để tính toán</strong></p><p>Diện tích mặt sàn của tất cả các khu vực được bao che trong một nhà hoặc phần nhà, bao gồm cả diện tích các kênh dẫn, sàn giếng thang máy, nhà vệ sinh, buồng thang bộ, diện tích chiếm chỗ bởi đồ dùng, máy móc, thiết bị cố định hoặc di động và cả các diện tích sinh hoạt hở ngoài trời ở phía trên hoặc phía dưới tầng 1 của nhà.</p>`,
+        
+        // --- PHÂN LOẠI CÔNG TRÌNH (Bảng 6) ---
+        29: `<h4 style="text-align:center">Bảng 6 – Phân nhóm nhà dựa trên tính nguy hiểm cháy theo công năng</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Nhóm</th><th>Mục đích sử dụng</th><th>Đặc điểm sử dụng</th></tr><tr><td>F1.1</td><td>Nhà trẻ, trường mẫu giáo, mầm non; bệnh viện...</td><td>Sử dụng cả ngày và đêm...</td></tr><tr><td>F1.2</td><td>Khách sạn, ký túc xá...</td><td></td></tr><tr><td>F1.3</td><td>Nhà chung cư...</td><td></td></tr><tr><td>F4.3</td><td>Trụ sở cơ quan, văn phòng, ngân hàng...</td><td>Có nhóm người làm việc cố định...</td></tr><tr><td>F5.1</td><td>Nhà sản xuất, xưởng...</td><td></td></tr><tr><td>F5.2</td><td>Nhà kho, gara xe...</td><td></td></tr></table>`,
+        30: `<h4 style="text-align:center">Bảng 6 (tiếp theo)</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Nhóm</th><th>Mục đích sử dụng</th></tr><tr><td>F2.1</td><td>Nhà hát, rạp chiếu phim, rạp xiếc...</td></tr><tr><td>F2.2</td><td>Bảo tàng, triển lãm...</td></tr><tr><td>F2.3</td><td>Nhà hát, rạp chiếu phim ngoài trời...</td></tr><tr><td>F3.1</td><td>Cơ sở thương mại, siêu thị...</td></tr><tr><td>F3.2</td><td>Cơ sở ăn uống...</td></tr><tr><td>F3.3</td><td>Nhà ga...</td></tr><tr><td>F3.4</td><td>Phòng khám đa khoa...</td></tr><tr><td>F3.5</td><td>Cơ sở dịch vụ đời sống...</td></tr></table>`,
+        31: `<h4 style="text-align:center">Bảng 6 (kết thúc)</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Nhóm</th><th>Mục đích sử dụng</th></tr><tr><td>F4.1</td><td>Trường học, cơ sở giáo dục...</td></tr><tr><td>F4.2</td><td>Trường đại học, cao đẳng...</td></tr><tr><td>F5.3</td><td>Nhà phục vụ nông nghiệp...</td></tr></table>`,
 
-        // --- NHÓM BẬC CHỊU LỬA (103-107) ---
-        103: `<h4 style="text-align:center">PHỤ LỤC H</h4><p>Bảng H.1 - Số tầng giới hạn và diện tích khoang cháy của nhà trẻ, trường mẫu giáo...</p>`,
-        104: `<h4 style="text-align:center">PHỤ LỤC H (Quy định)</h4><p><strong>Bảng H.3 - Số tầng giới hạn và diện tích khoang cháy của nhà công cộng, nhà sản xuất, nhà kho</strong></p><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Cấp nguy hiểm KC</th><th>Chiều cao PCCC (m)</th><th>Diện tích khoang cháy (m2)</th></tr><tr><td>I</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>II</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>III</td><td>S0</td><td><= 28</td><td>1200</td></tr></table>`,
-        105: `<h4 style="text-align:center">PHỤ LỤC H (Tiếp theo)</h4><p><strong>Bảng H.4 - Số tầng giới hạn và diện tích khoang cháy của nhà chung cư, nhà ký túc xá (F1.2, F1.3)</strong></p><table border="1" cellpadding="5" style="width:100%; border-collapse:collapse; margin-top:10px;"><tr style="background:#eee"><th>Bậc chịu lửa</th><th>Cấp nguy hiểm cháy KC</th><th>Chiều cao PCCC tối đa (m)</th><th>Diện tích khoang cháy tối đa (m2)</th></tr><tr><td>I</td><td>S0</td><td><= 75</td><td>2500</td></tr><tr><td>II</td><td>S0</td><td><= 50</td><td>2500</td></tr><tr><td>III</td><td>S0</td><td><= 28</td><td>1800</td></tr></table>`,
-        106: `<h4 style="text-align:center">PHỤ LỤC H (Tiếp theo)</h4><p>Ghi chú chung cho Phụ lục H:</p><p>- Khi nhà được trang bị hệ thống chữa cháy tự động, diện tích khoang cháy cho phép được tăng lên 100%.</p>`,
-        107: `<h4 style="text-align:center">PHỤ LỤC I</h4><p>Khoảng cách phòng cháy chống cháy...</p>`
+        // --- BẬC CHỊU LỬA (Bảng 4) ---
+        26: `<h4 style="text-align:center">Bảng 4 – Sự phù hợp giữa bậc chịu lửa của nhà, công trình và khoang cháy với giới hạn chịu lửa của cấu kiện xây dựng</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th rowspan="2">Bậc chịu lửa</th><th colspan="5">Giới hạn chịu lửa của cấu kiện, không nhỏ hơn (phút)</th></tr><tr><th>Tường/Cột chịu lực (R)</th><th>Sàn tầng (REI)</th><th>Tường ngoài (E)</th><th>Mái (R/RE)</th><th>Tường buồng thang (REI)</th></tr><tr><td>I</td><td>R 120</td><td>REI 60</td><td>E 30</td><td>REI 30</td><td>REI 120</td></tr><tr><td>II</td><td>R 90</td><td>REI 45</td><td>E 15</td><td>REI 15</td><td>REI 90</td></tr><tr><td>III</td><td>R 45</td><td>REI 45</td><td>E 15</td><td>REI 15</td><td>REI 60</td></tr><tr><td>IV</td><td>R 15</td><td>REI 15</td><td>E 15</td><td>REI 15</td><td>REI 45</td></tr><tr><td>V</td><td colspan="5">Không quy định</td></tr></table>`,
+        27: `<h4 style="text-align:center">Ghi chú Bảng 4</h4><p>CHÚ THÍCH 1: Trong các nhà có bậc chịu lửa I, II, III thì sàn và trần của tầng hầm, tầng nửa hầm phải làm bằng vật liệu không cháy và có giới hạn chịu lửa ít nhất REI 90. Sàn tầng 1 và tầng trên cùng phải làm bằng vật liệu có tính cháy không thấp hơn Ch1...</p><p>CHÚ THÍCH 2: Không quy định giới hạn chịu lửa của các tấm lợp... nếu chúng được làm từ vật liệu không cháy, hoặc cháy yếu...</p>`,
+
+        // --- THOÁT NẠN ---
+        38: `<h4 style="text-align:center">3.2.4. Số lượng và chiều rộng lối ra thoát nạn</h4><p>Số lượng và chiều rộng của các lối ra thoát nạn từ các gian phòng, các tầng và các nhà được xác định theo số lượng người thoát nạn lớn nhất có thể đi qua chúng và khoảng cách giới hạn cho phép từ chỗ xa nhất có thể có người (sinh hoạt, làm việc) tới lối ra thoát nạn gần nhất.</p>`,
+        39: `<h4 style="text-align:center">3.2.9. Kích thước lối ra thoát nạn</h4><p>Chiều cao thông thuỷ của lối ra thoát nạn phải không nhỏ hơn 1,9 m, chiều rộng thông thủy không nhỏ hơn:</p><ul><li>1,2 m – từ các gian phòng nhóm F1.1 khi số người thoát nạn lớn hơn 15 người, từ các gian phòng và nhà thuộc nhóm nguy hiểm cháy theo công năng khác có số người thoát nạn lớn hơn 50 người, ngoại trừ nhóm F1.3;</li><li>0,8 m – trong tất cả các trường hợp còn lại.</li></ul>`,
+        
+        // --- ĐƯỜNG XE CHỮA CHÁY ---
+        74: `<h4 style="text-align:center">6.2. Đường cho xe chữa cháy và bãi đỗ xe chữa cháy</h4><p><strong>6.2.1.1.</strong> Chiều rộng thông thủy của mặt đường cho xe chữa cháy không được nhỏ hơn 3,5 m.</p>`,
+        75: `<h4 style="text-align:center">Bảng 14 - Kích thước bãi đỗ xe chữa cháy</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Nhóm nhà</th><th>Chiều cao PCCC <= 15m</th><th>> 15m và <= 28m</th><th>> 28m</th></tr><tr><td>1. Nhà F1.3</td><td>Không yêu cầu</td><td>Rộng >= 6m; Dài >= 15m</td><td>Rộng >= 6m; Dài >= 15m</td></tr><tr><td>2. Các nhóm khác</td><td>Không yêu cầu</td><td>Rộng >= 6m; Dài theo Bảng 15,16</td><td>Rộng >= 6m; Dài theo Bảng 15,16</td></tr></table><p><strong>6.2.1.3.</strong> Chiều cao thông thủy để các phương tiện chữa cháy đi qua không được nhỏ hơn 4,5 m.</p>`,
+        79: `<h4 style="text-align:center">6.4. Bãi quay xe</h4><p>Thiết kế bãi quay xe phải phù hợp với phương tiện chữa cháy ở địa phương. (Mục 6.2.5: Nếu chiều dài của đường cho xe chữa cháy hoặc bãi đỗ xe chữa cháy dạng cụt lớn hơn 46 m thì ở cuối đoạn cụt phải có bãi quay xe được thiết kế theo quy định tại 6.4).</p>`,
+
+        // --- DIỆN TÍCH KHOANG CHÁY (PHỤ LỤC H) ---
+        146: `<h4 style="text-align:center">PHỤ LỤC H - Bảng H.1 – Nhà ở và ký túc xá kiểu căn hộ</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Cấp nguy hiểm cháy KC</th><th>Chiều cao PCCC max (m)</th><th>Diện tích khoang cháy max (m2)</th></tr><tr><td>I</td><td>S0</td><td>75</td><td>2 500</td></tr><tr><td>II</td><td>S0</td><td>50</td><td>2 500</td></tr><tr><td>II</td><td>S1</td><td>28</td><td>2 200</td></tr><tr><td>III</td><td>S0</td><td>28</td><td>1 800</td></tr><tr><td>IV</td><td>S0</td><td>5</td><td>1 000</td></tr></table>`,
+        147: `<h4 style="text-align:center">PHỤ LỤC H - Bảng H.2 – Nhà công cộng</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th rowspan="2">Bậc chịu lửa</th><th rowspan="2">Cấp nguy hiểm cháy KC</th><th rowspan="2">Chiều cao PCCC max (m)</th><th colspan="3">Diện tích khoang cháy max (m2) theo số tầng</th></tr><tr><th>1 tầng</th><th>2 tầng</th><th>3 tầng</th></tr><tr><td>I</td><td>S0</td><td>50</td><td>6 000</td><td>5 000</td><td>5 000</td></tr><tr><td>II</td><td>S0</td><td>50</td><td>6 000</td><td>4 000</td><td>4 000</td></tr><tr><td>III</td><td>S0</td><td>15</td><td>3 000</td><td>2 000</td><td>2 000</td></tr></table>`,
+        161: `<h4 style="text-align:center">H.6. Tính diện tích khoang cháy</h4><p>H.6.2. Diện tích khoang cháy là diện tích lớn nhất của một tầng trong phạm vi một khoang cháy. Diện tích một tầng trong phạm vi một khoang cháy là diện tích tầng được giới hạn bởi các tường bao của nhà và (hoặc) các tường ngăn cháy loại 1.</p>`,
+
+        // --- CẤP NƯỚC CHỮA CHÁY (Bảng 11) ---
+        67: `<h4 style="text-align:center">Bảng 11 – Số tia phun chữa cháy và lưu lượng nước tối thiểu đối với hệ thống họng nước chữa cháy trong nhà</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Loại nhà</th><th>Số tia phun</th><th>Lưu lượng/1 tia (L/s)</th></tr><tr><td>1. Nhà ở, chung cư (<= 16 tầng, hành lang <= 10m)</td><td>1</td><td>2,5</td></tr><tr><td>1. Nhà ở, chung cư (> 16 tầng)</td><td>2 hoặc 3</td><td>2,5</td></tr><tr><td>2. Nhà hành chính (<= 10 tầng, V <= 25.000 m3)</td><td>1</td><td>2,5</td></tr></table>`,
+
+        // --- CÁC PHỤ LỤC KHÁC ---
+        105: `<h4 style="text-align:center">PHỤ LỤC C - Bảng C.1 − Hạng nguy hiểm cháy và cháy nổ của gian phòng</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Hạng</th><th>Đặc điểm chất và vật liệu</th></tr><tr><td>A</td><td>Chất khí cháy, lỏng dễ bắt cháy (t <= 28 độ C)...</td></tr><tr><td>B</td><td>Bụi, sợi cháy, lỏng dễ bắt cháy (t > 28 độ C)...</td></tr><tr><td>C1-C4</td><td>Chất lỏng cháy, khó cháy, chất rắn cháy (kể cả bụi, sợi)...</td></tr><tr><td>D</td><td>Chất và vật liệu không cháy ở trạng thái nóng...</td></tr><tr><td>E</td><td>Chất và vật liệu không cháy ở trạng thái nguội.</td></tr></table>`,
+        119: `<h4 style="text-align:center">PHỤ LỤC E - Bảng E.1 − Khoảng cách phòng cháy chống cháy</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa nhà 1</th><th>Đến nhà Bậc I, II, III (S0)</th><th>Đến nhà Bậc IV (S0, S1)</th><th>Đến nhà Bậc IV, V (S2, S3)</th></tr><tr><td>I, II, III (S0)</td><td>6 m</td><td>8 m</td><td>10 m</td></tr><tr><td>II, III (S1)</td><td>8 m</td><td>10 m</td><td>12 m</td></tr><tr><td>IV (S0, S1)</td><td>8 m</td><td>10 m</td><td>12 m</td></tr><tr><td>IV, V (S2, S3)</td><td>10 m</td><td>12 m</td><td>15 m</td></tr></table>`,
+        120: `<h4 style="text-align:center">Bảng E.2 − Khoảng cách phòng cháy chống cháy giữa các nhà trong một cơ sở công nghiệp</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Đến nhà Bậc I, II</th><th>Đến nhà Bậc IV</th></tr><tr><td>I, II</td><td>9 m</td><td>12 m</td></tr><tr><td>IV</td><td>12 m</td><td>15 m</td></tr></table>`,
+        137: `<h4 style="text-align:center">PHỤ LỤC G - Bảng G.1 – Khoảng cách giới hạn cho phép (Nhà ở)</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Cửa giữa các thang/lối ra ngoài</th><th>Cửa hành lang cụt</th></tr><tr><td>I, II (S0)</td><td>40 m</td><td>25 m</td></tr><tr><td>III (S0)</td><td>30 m</td><td>20 m</td></tr><tr><td>IV (S0)</td><td>25 m</td><td>15 m</td></tr><tr><td>V</td><td>20 m</td><td>10 m</td></tr></table>`,
+        138: `<h4 style="text-align:center">Bảng G.2a − Khoảng cách giới hạn... đối với nhà công cộng</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Bậc chịu lửa</th><th>Giữa các thang (m)</th><th>Hành lang cụt (m)</th></tr><tr><td>I, II, III</td><td>60</td><td>30</td></tr><tr><td>IV</td><td>40</td><td>20</td></tr><tr><td>V</td><td>30</td><td>15</td></tr></table>`,
+        139: `<h4 style="text-align:center">Bảng G.2b − Khoảng cách giới hạn... gian phòng không có ghế ngồi</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Gian phòng</th><th>Bậc chịu lửa</th><th>V <= 5.000 m3</th><th>> 5.000 m3</th></tr><tr><td>Sảnh, phòng chờ...</td><td>I, II</td><td>30 m</td><td>45 m</td></tr><tr><td>Phòng thương mại (lối đi >= 25%)</td><td>I, II</td><td>50 m</td><td>65 m</td></tr></table>`,
+        140: `<h4 style="text-align:center">Bảng G.3 − Khoảng cách giới hạn... nhà sản xuất</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Hạng</th><th>Bậc chịu lửa</th><th>V <= 15.000 m3</th><th>V = 30.000 m3</th></tr><tr><td>A, B</td><td>I, II, III, IV (S0)</td><td>40 m</td><td>60 m</td></tr><tr><td>C</td><td>I, II, III, IV (S0)</td><td>100 m</td><td>145 m</td></tr></table>`,
+        144: `<h4 style="text-align:center">Bảng G.9 − Hệ số không gian sàn</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Không gian sử dụng</th><th>Hệ số (m2/người)</th></tr><tr><td>1. Hội trường, nơi đông người...</td><td>1,0</td></tr><tr><td>2. Sảnh lớn, siêu thị...</td><td>3,0</td></tr><tr><td>3. Phòng họp, phòng học...</td><td>1,5</td></tr><tr><td>8. Văn phòng</td><td>6,0</td></tr><tr><td>11. Phòng ngủ</td><td>8,0</td></tr><tr><td>13. Kho</td><td>30,0</td></tr><tr><td>14. Nhà để xe ôtô</td><td>2 người/ô</td></tr></table>`,
+        145: `<h4 style="text-align:center">Bảng G.9 (kết thúc)</h4><p>CHÚ THÍCH 1: Nếu không sử dụng các giá trị trong bảng này thì có thể xác định hệ số không gian sàn theo số liệu thực tế...</p>`,
+        104: `<h4 style="text-align:center">Bảng B.8 & B.9 - Yêu cầu vật liệu</h4><table border="1" style="width:100%; border-collapse:collapse;"><tr><th>Khu vực</th><th>Tường/Trần</th><th>Sàn</th></tr><tr><td>Hành lang, đường thoát nạn (Nhà cao tầng)</td><td>CV0/CV1</td><td>CV2</td></tr><tr><td>Phòng chung > 300 người</td><td>CV1</td><td>CV2</td></tr></table>`,
+        84: `<h4 style="text-align:center">Phụ lục A - A.1.2. Quy định chung (Nhà sản xuất)</h4><p>A.1.2.1. Diện tích một tầng của nhà trong phạm vi một khoang cháy được xác định theo chu vi bên trong của tường bao của tầng, không tính diện tích buồng thang bộ... Diện tích xây dựng được xác định theo chu vi ngoài của nhà ở cao độ chân tường, bao gồm cả các phần nhô ra, đường đi qua dưới nhà, các phần nhà không có kết cấu ngăn che bên ngoài.</p>`
     };
 
-    // --- HÀM LOGIC CHÍNH ---
+    // --- HÀM LOGIC CHÍNH (GIỮ NGUYÊN) ---
     function runCheckAll() {
         const inputs = {
             h: parseFloat(document.getElementById('inp-height').value) || 0,
             f: parseInt(document.getElementById('inp-floors').value) || 0,
-            area: parseFloat(document.getElementById('inp-area').value) || 0,
+            buildArea: parseFloat(document.getElementById('inp-build-area').value) || 0,
+            floorArea: parseFloat(document.getElementById('inp-area').value) || 0,
+            volume: parseFloat(document.getElementById('inp-volume').value) || 0,
             people: parseInt(document.getElementById('inp-people').value) || 0,
             func: document.getElementById('inp-function').value,
             dist: parseFloat(document.getElementById('inp-dist').value) || 0,
@@ -452,83 +833,99 @@
         const autoGrade = calculateFireGrade(inputs);
         document.getElementById('auto-grade-display').textContent = `Bậc ${autoGrade.grade}`;
         
-        // Render Card 1
-        renderReportCard(report, '1. Xác định Bậc chịu lửa & Quy mô', autoGrade.status, `
-            <div class="report-row"><span class="report-label">Chiều cao:</span> <span class="report-val">${inputs.h} m</span></div>
-            <div class="report-row"><span class="report-label">Công năng:</span> <span class="report-val">${inputs.func}</span></div>
-            <div class="calc-box">
-                → Tra Bảng H.4 (Phụ lục H) cho Chung cư / H.3 cho công năng khác<br>
-                → Kết luận: <strong>BẬC ${autoGrade.grade}</strong>
-            </div>
-        `, [
-            // Citation object array
-            { page: 105, label: 'Bảng H.4 (Đối chiếu F1.3)', highlights: ["F1.3", "Bậc "+autoGrade.grade, "2500", inputs.h > 50 ? "75" : "50"] },
-            { page: 106, label: 'Ghi chú Phụ lục H (Tăng diện tích)', highlights: ["chữa cháy tự động", "tăng lên 100%"] }
+        let rowsHTML = '<table class="report-table">';
+        
+        const addRow = (label, val, citations) => {
+            let btnHTML = '';
+            if(citations && citations.length > 0) {
+                const citStr = JSON.stringify(citations).replace(/"/g, "&quot;");
+                btnHTML = `<button class="mini-cite-btn" onclick="openDocViewer(${citStr})">📖 Quy chuẩn</button>`;
+            }
+            rowsHTML += `<tr><td class="report-label">${label}</td><td style="text-align:right"><span class="report-val">${val}</span>${btnHTML}</td></tr>`;
+        };
+
+        addRow('Chiều cao PCCC', `${inputs.h} m`, [{ page: 8, label: 'Mục 1.4.9 - Chiều cao PCCC', highlights: ['Chiều cao PCCC'] }]);
+        addRow('Số tầng', `${inputs.f} tầng`, [{ page: 14, label: 'Mục 1.4.50 - Số tầng nhà', highlights: ['Số tầng nhà'] }]);
+        addRow('Công năng', inputs.func, [{ page: 146, label: 'Bảng H.1 (F1.3) hoặc H.2', highlights: ['F1.3'] }]);
+        
+        if(inputs.floorArea > 0) {
+            addRow('Diện tích sàn', `${inputs.floorArea} m²`, [{ page: 161, label: 'H.6 - Diện tích khoang cháy', highlights: ['Diện tích khoang cháy'] }]);
+        }
+
+        addRow('Bậc chịu lửa Yêu cầu', `BẬC ${autoGrade.grade}`, [
+            { page: 26, label: 'Bảng 4 - Giới hạn chịu lửa cấu kiện', highlights: [autoGrade.grade] },
+            { page: 146, label: 'Phụ lục H - Tra cứu Bậc/Chiều cao', highlights: ['75', '50'] }
         ]);
+
+        rowsHTML += '</table>';
+
+        renderReportCard(report, '1. Kết quả Xác định Bậc chịu lửa', autoGrade.status, `
+            ${rowsHTML}
+            <div class="calc-box">
+                → Dựa trên Chiều cao PCCC ${inputs.h}m và Công năng ${inputs.func}.<br>
+                → Tra cứu Bảng H.1 (cho Chung cư) hoặc H.2 (cho nhà công cộng).
+            </div>
+        `);
 
         // 2. TÍNH THOÁT NẠN
         if (inputs.people > 0) {
             const egress = calculateEgress(inputs.people, inputs.func);
+            let egressRows = '<table class="report-table">';
             
-            renderReportCard(report, '2. Tính toán Thoát nạn (Chi tiết)', 'ok', `
-                <div class="report-row"><span class="report-label">Số người:</span> <span class="report-val">${inputs.people}</span></div>
+             const addEgressRow = (label, val, citations) => {
+                let btnHTML = '';
+                if(citations && citations.length > 0) {
+                    const citStr = JSON.stringify(citations).replace(/"/g, "&quot;");
+                    btnHTML = `<button class="mini-cite-btn" onclick="openDocViewer(${citStr})">📖 Quy chuẩn</button>`;
+                }
+                egressRows += `<tr><td class="report-label">${label}</td><td style="text-align:right"><span class="report-val">${val}</span>${btnHTML}</td></tr>`;
+            };
+
+            addEgressRow('Số lượng người', inputs.people, [{pages: [144, 145], label: 'Bảng G.9 - Hệ số sàn', highlights: ['Hệ số không gian sàn']}]);
+            addEgressRow('Rộng yêu cầu (Mật độ)', `${egress.widthCalc} m`, [{page: 38, label: 'Mục 3.2.4 - Tính toán thoát nạn', highlights: ['chiều rộng']}]);
+            addEgressRow('Rộng tối thiểu (Quy định)', `${egress.minAllowed} m`, [{page: 39, label: 'Mục 3.2.9 - Kích thước tối thiểu', highlights: ['1,2 m', '0,8 m']}]);
+            addEgressRow('Kết luận (Chọn max)', `${egress.finalWidth} m`, []);
+
+            egressRows += '</table>';
+            
+            renderReportCard(report, '2. Tính toán Thoát nạn', 'ok', `
+                ${egressRows}
                 <div class="calc-box">
-                    1. Tính theo mật độ (Mục 3.2.4):<br>
-                    ${inputs.people} / 100 = <strong>${egress.widthCalc} m</strong><br><br>
-                    2. So sánh với tối thiểu (Mục 3.4.1):<br>
-                    Yêu cầu cửa: <strong>${egress.minAllowed} m</strong><br><br>
-                    3. Kết luận: Chọn <strong>${egress.finalWidth} m</strong>
+                    Kết quả đã so sánh giữa tính toán theo mật độ dòng người và quy định kích thước tối thiểu.
                 </div>
-            `, [
-                // MULTIPLE CITATIONS FOR EGRESS
-                { page: 38, label: 'Mục 3.2.4 (Mật độ dòng người)', highlights: ["100 người", "1,00m", "0,80m"] },
-                { page: 39, label: 'Mục 3.4.1 (Chiều rộng tối thiểu)', highlights: ["1,0 m", "0,9 m", "1,2 m"] }
-            ]);
+            `);
         }
     }
 
-    // --- DOCUMENT VIEWER LOGIC (MULTI-PAGE SUPPORT) ---
+    // --- DOCUMENT VIEWER LOGIC ---
     function openDocViewer(citations) {
-        // citations is an array of objects: [{page: 38, label: '...', highlights: []}, ...]
         const modal = document.getElementById('doc-modal');
         const content = document.getElementById('doc-viewer-content');
         
         content.innerHTML = '';
 
         citations.forEach((cit, idx) => {
-            const centerPage = cit.page;
-            // Render Group Container
             const groupDiv = document.createElement('div');
             groupDiv.className = 'citation-group';
             
-            // Header for the basis
             const titleDiv = document.createElement('div');
             titleDiv.className = 'citation-group-title';
             titleDiv.innerText = `CĂN CỨ ${idx + 1}: ${cit.label}`;
             groupDiv.appendChild(titleDiv);
 
-            // Pages: center-1, center, center+1
-            const pagesToRender = [centerPage - 1, centerPage, centerPage + 1];
+            // Xử lý mảng trang hoặc trang đơn
+            const pages = cit.pages || [cit.page];
 
-            pagesToRender.forEach((pageNum, pIdx) => {
-                const pageData = qcvnPages[pageNum] || `<div style="text-align:center; padding-top:100px; color:#999;">(Nội dung trang ${pageNum} đang cập nhật...)</div>`;
+            pages.forEach(pageNum => {
+                const pageData = qcvnPages[pageNum] || `<div style="text-align:center; padding-top:100px; color:#999;">(Nội dung trang ${pageNum} chưa có trong dữ liệu trích xuất...)</div>`;
                 
                 const pageDiv = document.createElement('div');
                 pageDiv.className = 'doc-page';
                 
-                // Labels
-                let labelText = '';
-                let labelClass = 'page-label';
-                if (pIdx === 0) labelText = `TRANG TRƯỚC (${pageNum})`;
-                if (pIdx === 1) { labelText = `TRANG CĂN CỨ (${pageNum})`; labelClass += ' is-center'; }
-                if (pIdx === 2) labelText = `TRANG SAU (${pageNum})`;
-
-                // Highlighting (Only for center page)
                 let processedContent = pageData;
-                if (pIdx === 1 && cit.highlights && cit.highlights.length > 0) {
+                if (cit.highlights && cit.highlights.length > 0) {
                     cit.highlights.forEach(keyword => {
                         try {
-                            // Simple replace, caution with HTML tags in production
                             const regex = new RegExp(`(${keyword})`, 'gi');
                             processedContent = processedContent.replace(regex, '<mark class="highlight">$1</mark>');
                         } catch(e) {}
@@ -536,14 +933,14 @@
                 }
 
                 pageDiv.innerHTML = `
-                    <div class="${labelClass}">${labelText}</div>
+                    <div class="page-label is-center">TRANG CĂN CỨ</div>
                     <div class="doc-page-header-text">QCVN 06:2022/BXD - BỘ XÂY DỰNG</div>
                     ${processedContent}
-                    <div class="doc-page-number">Trang ${pageNum}</div>
+                    <div class="doc-page-number">Trang ${pageNum} (PDF)</div>
                 `;
                 groupDiv.appendChild(pageDiv);
             });
-
+            
             content.appendChild(groupDiv);
         });
 
@@ -572,14 +969,10 @@
         return { widthCalc: wCalc.toFixed(2), minAllowed: minW, finalWidth: wFinal.toFixed(2) };
     }
 
-    // Updated renderReportCard to accept citations array
-    function renderReportCard(container, title, status, contentHTML, citations) {
+    function renderReportCard(container, title, status, contentHTML) {
         const statusClass = status === 'ok' ? 'st-ok' : (status === 'err' ? 'st-err' : 'st-warn');
         const statusText = status === 'ok' ? 'ĐẠT / ĐÃ TÍNH' : 'LƯU Ý';
         
-        // Serialize citations for onClick
-        const citString = JSON.stringify(citations).replace(/"/g, "&quot;");
-
         const html = `
             <div class="report-card">
                 <div class="report-header">
@@ -587,12 +980,6 @@
                     <div class="status-badge ${statusClass}">${statusText}</div>
                 </div>
                 <div>${contentHTML}</div>
-                <div style="margin-top:12px; border-top:1px solid #f0f0f0; padding-top:10px;">
-                    <div class="citation-trigger" onclick="openDocViewer(${citString})">
-                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                        <span>Xem căn cứ pháp lý chi tiết (${citations.length} mục)</span>
-                    </div>
-                </div>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', html);
@@ -607,6 +994,44 @@
     function toggleRiskInput() {
         const f = document.getElementById('inp-function').value;
         document.getElementById('risk-container').style.display = f.startsWith('F5') ? 'block' : 'none';
+    }
+
+    // Filter Table Function
+    function filterTable(tableId, inputId) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(inputId);
+        filter = input.value.toUpperCase();
+        table = document.getElementById(tableId);
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0]; // Cột Mã
+            let td2 = tr[i].getElementsByTagName("td")[1]; // Cột Mô tả
+            if (td || td2) {
+                txtValue = (td.textContent || td.innerText) + (td2.textContent || td2.innerText);
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // Check Road Access Function
+    function checkRoadAccess() {
+        const w = parseFloat(document.getElementById('check-road-width').value) || 0;
+        const h = parseFloat(document.getElementById('check-road-height').value) || 0;
+        const res = document.getElementById('road-result');
+        res.style.display = 'block';
+
+        let msg = '';
+        if (w >= 3.5) msg += '<div style="color:green">✔ Chiều rộng đạt (>3.5m)</div>';
+        else msg += '<div style="color:red">✘ Chiều rộng KHÔNG ĐẠT (<3.5m)</div>';
+
+        if (h >= 4.5) msg += '<div style="color:green">✔ Chiều cao đạt (>4.5m)</div>';
+        else msg += '<div style="color:red">✘ Chiều cao KHÔNG ĐẠT (<4.5m)</div>';
+
+        res.innerHTML = msg;
     }
 </script>
 
